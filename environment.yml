@@ -1,0 +1,15 @@
+name: agu-2022-notebooks
+channels:
+  - conda-forge
+  - nodefaults
+dependencies:
+  - python
+  - pip
+  # For Coherence and Hand STAC notebooks
+  - pystac-client
+  - jupyter
+  # To generate HAND data
+  - asf_tools
+  - numpy
+  - rasterio
+  - shapely
