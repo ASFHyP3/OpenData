@@ -9,7 +9,7 @@
   <link rel="stylesheet" href="https://assets.opendata.aws/css/awsod.css"
     integrity="sha384-xJI5lYTAHi5szIar83e2pooIt8BOLN3vGa4dRrLi07y45XFAbgzl9F0mMNyw5SzN" crossorigin="anonymous">
   <title>Global 30m HAND dataset</title>
-  
+
   <style type="text/css">
     th, td {
       padding:0 15px;
@@ -56,7 +56,7 @@
       as the GLO-30 DEM, and individual tiles are pixel-aligned to the corresponding COG DEM tile.
 
       The properties of the COG files:
-      
+
       <ul>
         <li>32 floating point data type</li>  <!--FIXME: verify -->
         <li>DEFLATE compression using predictor for floating points (PREDICTOR=3)</li>  <!--FIXME: verify -->
@@ -150,7 +150,7 @@
         <li>
           <p><code>[northing]</code> = e.g. <code>S50_00</code> - decimal degrees where the decimal part is always
             <code>00</code>.</p>
-            
+
           In original GLO-30 DEM files as distributed by Copernicus, this is the northing of the center of the bottom-most
           pixels, while in the GLO-30 DEM COGs and our files, because we removed the bottom-most pixels, the center of the
           new bottom-most pixels is one pixel-length (resolution) away to north.
@@ -158,7 +158,7 @@
         <li>
           <p><code>[easting]</code> = e.g. <code>w125_00</code> - decimal degrees where the decimal part is always
             <code>00</code>.</p>
-            
+
             The easting of the center of the left-most pixels.
         </li>
       </ul>
@@ -181,7 +181,7 @@
         Copyright 2022 Alaska Satellite Facility (ASF). Produced using the Copernicus WorldDEM™-30 © DLR e.V. 2010-2014
         and © Airbus Defence and Space GmbH 2014-2018 provided under COPERNICUS by the European Union and ESA; all rights
         reserved. The use of the HAND data falls under the terms and conditions of the
-         <a href="https://creativecommons.org/licenses/by/4.0/">Creative Commons Attribution 4.0 International Public License</a>.</p>
+         <a href="https://creativecommons.org/publicdomain/zero/1.0/">Creative Commons Zero (CC0) 1.0 Universal License</a>.</p>
 
       <footer>
         <hr>
