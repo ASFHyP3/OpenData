@@ -15,3 +15,9 @@ This dataset is hosted in the `s3://asf-event-data` bucket on AWS. For more info
 On a merge to main, [deploy-asf-event-data-files.yml](.github/workflows/deploy-events-readme.yml) will upload to the `s3://asf-event-data` bucket:
 * `asf-event-data/README.html`, which is automatically created from [`asf-event-data/README.md`](asf-event-data/README.md)
 * `asf-event-data/index.html`, which is automatically created from [`shared/index.html`](shared/index.html)
+
+### HAND
+
+Height Above Nearest Drainage (HAND) is a terrain model that normalizes topography to the relative heights along the drainage network and is used to describe the relative soil gravitational potentials or the local drainage potentials. Each pixel value represents the vertical distance to the nearest drainage. The HAND data provides near-worldwide land coverage at 30 meters and was produced from the 2021 release of the Copernicus GLO-30 Public DEM as distributed in the Registry of Open Data on AWS.
+
+For more information, see: [the listing on AWS OpenData](FIXME), which is manged by [this YAML](FIXME)
