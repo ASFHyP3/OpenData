@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="https://assets.opendata.aws/css/bootstrap.min.css"
+    integrity="sha384-QgMEqHzUTK+LoHUhEPkPPb5doQ7O2/sBRiq03GWdbo3k3eNPu/LMiRtrWI+SdVzu" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://assets.opendata.aws/css/awsod.css"
+    integrity="sha384-xJI5lYTAHi5szIar83e2pooIt8BOLN3vGa4dRrLi07y45XFAbgzl9F0mMNyw5SzN" crossorigin="anonymous">
+  <title>Global 30m HAND dataset</title>
+
+  <style type="text/css">
+    th, td {
+      padding:0 15px;
+    }
+    </style>
+</head>
+
+<body>
+  <div class="container">
+    <div class="col-md-8 col-md-offset-2">
+      <h1>Global 30m HAND dataset</h1>
+
+      <p>
+        Height Above Nearest Drainage (HAND) is a terrain model that normalizes topography to the relative heights along
+        the drainage network and is used to describe the relative soil gravitational potentials or the local drainage
+        potentials. Each pixel value represents the vertical distance to the nearest drainage. The HAND data provides
+        near-worldwide land coverage at 30 meters and was produced from the 2021 release of the Copernicus GLO-30 Public
+        DEM as distributed in the <a href="https://registry.opendata.aws/copernicus-dem/">Registry of Open Data on AWS</a>.
+      </p>
+
+
+      <h2 id="data-processing">Data processing</h2>
+
+      To generate the GLO-30 HAND, we used the <a href="https://hyp3-docs.asf.alaska.edu/tools/asf_tools_api/#asf_tools.hand.calculate">
+      ASF Tools</a> Python package, which is based on the HydroSAR <a href="https://github.com/fjmeyer/HydroSAR/blob/master/Big_Hand_notebook.ipynb">Big_Hand_notebook.ipynb</a>
+      and uses <a href="https://github.com/mdbartos/pysheds">PySheds</a>, a library for simple and fast watershed delineation in Python.
+      This involves:
+
+      <ul>
+        <li>Filling pits (single-cells lower than their surrounding neighbors) in the DEM</li>
+        <li>Filling depressions (regions of cells lower than their surrounding neighbors) in the DEM</li>
+        <li>Resolving un-drainable flats</li>
+        <li>Determining the flow direction using the ESRI D8 routing scheme</li>
+        <li>Determining flow accumulation (number of upstream cells)</li>
+        <li>Creating a drainage mask using the accumulation threshold</li>
+        <li>Calculating HAND</li>
+      </ul>
+
+
+      <h3>GLO-30 HAND</h3>
+
+      The HAND data are provided as a tiled set of Cloud Optimized GeoTIFFs (COGs) with 30-meter (1 arcsecond) pixel spacing.
+      The COGs are organized into the same <a href="https://copernicus-dem-30m.s3.amazonaws.com/readme.html">1 degree by 1 degree grid tiles</a>
+      as the GLO-30 DEM, and individual tiles are pixel-aligned to the corresponding COG DEM tile.
+
+      The properties of the COG files:
+
+      <ul>
+        <li>32 floating point data type</li>  <!--FIXME: verify -->
+        <li>DEFLATE compression using predictor for floating points (PREDICTOR=3)</li>  <!--FIXME: verify -->
+        <li>average downsampling</li>  <!--FIXME: verify -->
+        <li>height: 3600 pixels</li>
+        <li>TIFF tile size: 1024 * 1024 pixels</li>  <!--FIXME: verify -->
+      </ul>
+
+      <table>
+        <thead>
+          <tr>
+            <th>Longitude spacing</th>
+            <th>Latitude spacing</th>
+            <th>width</th>
+            <th>overview widths</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>0 - 50</td>
+            <td>1x</td>
+            <td>3600</td>
+            <td>1800, 900, 450</td>
+          </tr>
+          <tr>
+            <td>50 - 60</td>
+            <td>1.5x</td>
+            <td>2400</td>
+            <td>1200, 600, 300</td>
+          </tr>
+          <tr>
+            <td>60 - 70</td>
+            <td>2x</td>
+            <td>1800</td>
+            <td>900, 450, 225</td>
+          </tr>
+          <tr>
+            <td>70 - 80</td>
+            <td>3x</td>
+            <td>1200</td>
+            <td>600, 300, 150</td>
+          </tr>
+          <tr>
+            <td>80 - 85</td>
+            <td>5x</td>
+            <td>720</td>
+            <td>360, 180, 90</td>
+          </tr>
+          <tr>
+            <td>85 - 90</td>
+            <td>10x</td>
+            <td>360</td>
+            <td>180, 90, 45</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <h2 id="data-structure">Data structure</h2>
+
+      <p>
+        Each file is its own object in Amazon S3. The data are organised per tiles into to same
+        <a href="https://copernicus-dem-30m.s3.amazonaws.com/readme.html">1 degree by 1 degree grid tiles</a>
+        as the GLO-30 DEM. The tiles are contained in an AWS S3 Bucket named:</p>
+      <p>
+        <code>glo-30-hand</code>
+      </p>
+      <p>
+        And are organised under S3 prefixes like:
+      </p>
+      <p>
+        <code>[version]/[DEM release year]</code>
+      </p>
+      <p>
+        Where <code>[version]</code> indicates the HAND dataset version, and <code>[DEM release year]</code> indicates
+        which release of the Copernicus GLO-30 DEM the HAND data was generated from. For example, the tiles are available
+        in the following location:
+        <code>s3://glo-30-hand/v1/2021/</code>
+      </p>
+
+      <p>
+        The HAND tile files retain the same naming scheme as the original COP-30 DEM tiles like:
+      </p>
+      <p>
+        <code>Copernicus_DSM_COG_[resolution]_[northing]_[easting]_HAND.tif</code>
+      </p>
+      <p>Where:</p>
+      <ul>
+        <li>
+          <p><code>[resolution]</code> - resolution in arc seconds (not meters!), which is <code>10</code> for GLO-30.</p>
+        </li>
+        <li>
+          <p><code>[northing]</code> = e.g. <code>S50_00</code> - decimal degrees where the decimal part is always
+            <code>00</code>.</p>
+
+          In original GLO-30 DEM files as distributed by Copernicus, this is the northing of the center of the bottom-most
+          pixels, while in the GLO-30 DEM COGs and our files, because we removed the bottom-most pixels, the center of the
+          new bottom-most pixels is one pixel-length (resolution) away to north.
+        </li>
+        <li>
+          <p><code>[easting]</code> = e.g. <code>w125_00</code> - decimal degrees where the decimal part is always
+            <code>00</code>.</p>
+
+            The easting of the center of the left-most pixels.
+        </li>
+      </ul>
+
+      <h2 id="accessing-the--dataset">Accessing the GLO-30 HAND data</h2>
+      <p>If you use the AWS Command Line Interface, you can list data in the bucket with the &ldquo;ls&rdquo; command:
+      </p>
+
+      <p>
+        <code>aws s3 ls --recursive --summarize s3://glo-30-hand/</code>
+      </p>
+
+      <h2 id="contact">Contact</h2>
+
+      <p>If you have questions about the data, please email the <a href="mailto:uaf-asf-apd@alaska.edu">ASF Tools Team</a>.</p>
+
+      <h2 id="license">License</h2>
+
+      <p>
+        Copyright 2022 Alaska Satellite Facility (ASF). Produced using the Copernicus WorldDEM™-30 © DLR e.V. 2010-2014
+        and © Airbus Defence and Space GmbH 2014-2018 provided under COPERNICUS by the European Union and ESA; all rights
+        reserved. The use of the HAND data falls under the terms and conditions of the
+         <a href="https://creativecommons.org/publicdomain/zero/1.0/">Creative Commons Zero (CC0) 1.0 Universal License</a>.</p>
+
+      <footer>
+        <hr>
+        <a href="http://aws.amazon.com/public-datasets">AWS Public Datasets</a>
+      </footer>
+    </div>
+  </div>
+</body>
+
+</html>
