@@ -1,15 +1,15 @@
-name: agu-2022-notebooks
+name: asf-opendata
 channels:
   - conda-forge
   - nodefaults
 dependencies:
   - python
   - pip
-  # For Coherence and Hand STAC notebooks
+  # For Hand STAC notebooks
   - pystac-client
   - jupyter
   # To generate HAND data
-  - asf_tools
+  - hydrosar
   - numpy
   - rasterio
   - shapely
