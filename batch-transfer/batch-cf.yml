@@ -2,11 +2,19 @@ AWSTemplateFormatVersion: 2010-09-09
 
 Parameters:
 
+  ImageUri:
+    Type: String
+
   VpcId:
     Type: AWS::EC2::VPC::Id
 
   SubnetIds:
     Type: List<AWS::EC2::Subnet::Id>
+
+Outputs:
+
+  TaskRoleArn:
+    Value: !GetAtt TaskRole.Arn
 
 Resources:
 
@@ -16,29 +24,10 @@ Resources:
       GroupDescription: !Sub "Security group for ${AWS::StackName} machines"
       VpcId: !Ref VpcId
 
-  LaunchTemplate:
-    Type: AWS::EC2::LaunchTemplate
-    Properties:
-      LaunchTemplateData:
-        MetadataOptions:
-          HttpTokens: required
-        UserData:
-          Fn::Base64: |-
-            Content-Type: multipart/mixed; boundary="==BOUNDARY=="
-            MIME-Version: 1.0
-
-            --==BOUNDARY==
-            Content-Type: text/cloud-boothook; charset="us-ascii"
-
-            #!/bin/bash
-            cloud-init-per instance mkfs_ssd mkfs.ext4 /dev/nvme1n1
-            mount /dev/nvme1n1 /var/lib/docker
-
-            --==BOUNDARY==--
-
   ComputeEnvironment:
     Type: AWS::Batch::ComputeEnvironment
     Properties:
+      ComputeEnvironmentName: opendata-transfer-compute-environment-2
       ServiceRole: !GetAtt BatchServiceRole.Arn
       Type: MANAGED
       ComputeResources:
@@ -46,28 +35,51 @@ Resources:
         MinvCpus: 0
         MaxvCpus: 64
         InstanceTypes:
-          - c7gn.4xlarge
+          - c7i.4xlarge
         Subnets: !Ref SubnetIds
         InstanceRole: !Ref InstanceProfile
         SecurityGroupIds:
           - !Ref SecurityGroup
-        LaunchTemplate:
-          LaunchTemplateId: !Ref LaunchTemplate
-          Version: !GetAtt LaunchTemplate.LatestVersionNumber
         Tags:
           Name: !Ref AWS::StackName
-
-  SchedulingPolicy:
-    Type: AWS::Batch::SchedulingPolicy
 
   BatchJobQueue:
     Type: AWS::Batch::JobQueue
     Properties:
+      JobQueueName: opendata-transfer-job-queue
       Priority: 1
       ComputeEnvironmentOrder:
         - ComputeEnvironment: !Ref ComputeEnvironment
           Order: 1
-      SchedulingPolicyArn: !Ref SchedulingPolicy
+
+  TaskRole:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Version: 2012-10-17
+        Statement:
+          Action: sts:AssumeRole
+          Principal:
+            Service: ecs-tasks.amazonaws.com
+          Effect: Allow
+      ManagedPolicyArns:
+        - arn:aws:iam::aws:policy/AmazonS3ReadOnlyAccess
+        - !Ref TaskPolicy
+
+  TaskPolicy:
+    Type: AWS::IAM::ManagedPolicy
+    Properties:
+      PolicyDocument:
+        Version: 2012-10-17
+        Statement:
+          - Effect: Allow
+            Action:
+              - s3:PutObject
+              - s3:PutObjectTagging
+            Resource: "arn:aws:s3:::its-live-open/*"
+          - Effect: Allow
+            Action: s3:ListBucket
+            Resource: "arn:aws:s3:::its-live-open"
 
   BatchServiceRole:
     Type: AWS::IAM::Role
@@ -104,35 +116,22 @@ Resources:
   JobDefinition:
     Type: AWS::Batch::JobDefinition
     Properties:
+      JobDefinitionName: opendata-transfer-job-definition
       Type: container
       Parameters:
-        source_s3_uri: ""
-        target_s3_uri: ""
+        s3_prefix: ""
       ContainerProperties:
-        Image: amazonlinux:2023
+        Image: !Ref ImageUri
         JobRoleArn: !GetAtt TaskRole.Arn
         ResourceRequirements:
           - Type: VCPU
             Value: "16"
           - Type: MEMORY
-            Value: "32768"
+            Value: "30000"
         Command:
-          - aws
-          - s3
-          - sync
-          - --no-progress
-          - --dryrun
-          - Ref::source_s3_uri
-          - Ref::target_s3_uri
-      # TODO timeout?
+          - Ref::s3_prefix
 
-  TaskRole:
-    Type: AWS::IAM::Role
+  ECRRepository:
+    Type: AWS::ECR::Repository
     Properties:
-      AssumeRolePolicyDocument:
-        Version: 2012-10-17
-        Statement:
-          Action: sts:AssumeRole
-          Principal:
-            Service: ecs-tasks.amazonaws.com
-          Effect: Allow
+      RepositoryName: opendata-transfer
