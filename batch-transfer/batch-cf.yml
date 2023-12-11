@@ -27,15 +27,15 @@ Resources:
   ComputeEnvironment:
     Type: AWS::Batch::ComputeEnvironment
     Properties:
-      ComputeEnvironmentName: opendata-transfer-compute-environment-3
+      ComputeEnvironmentName: opendata-transfer-compute-environment-4
       ServiceRole: !GetAtt BatchServiceRole.Arn
       Type: MANAGED
       ComputeResources:
         Type: EC2
         MinvCpus: 0
-        MaxvCpus: 64
+        MaxvCpus: 4000
         InstanceTypes:
-          - c7i.large
+          - c7i.4xlarge
         Subnets: !Ref SubnetIds
         InstanceRole: !Ref InstanceProfile
         SecurityGroupIds:
@@ -125,9 +125,9 @@ Resources:
         JobRoleArn: !GetAtt TaskRole.Arn
         ResourceRequirements:
           - Type: VCPU
-            Value: "2"
+            Value: "16"
           - Type: MEMORY  # MiB
-            Value: "3000"
+            Value: "30000"
         Command:
           - Ref::s3_prefix
 
