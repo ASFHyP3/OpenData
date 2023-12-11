@@ -53,8 +53,10 @@ Resources:
           Order: 1
 
   TaskRole:
-    Type: AWS::IAM::Role
+    Type: 'Custom::JplRole'
     Properties:
+      ServiceToken: !ImportValue Custom::JplRole::ServiceToken
+      Path: /account-managed/hyp3/
       AssumeRolePolicyDocument:
         Version: 2012-10-17
         Statement:
@@ -67,8 +69,10 @@ Resources:
         - !Ref TaskPolicy
 
   TaskPolicy:
-    Type: AWS::IAM::ManagedPolicy
+    Type: 'Custom::JplPolicy'
     Properties:
+      ServiceToken: !ImportValue Custom::JplPolicy::ServiceToken
+      Path: /account-managed/hyp3/
       PolicyDocument:
         Version: 2012-10-17
         Statement:
@@ -82,8 +86,10 @@ Resources:
             Resource: "arn:aws:s3:::its-live-open"
 
   BatchServiceRole:
-    Type: AWS::IAM::Role
+    Type: 'Custom::JplRole'
     Properties:
+      ServiceToken: !ImportValue Custom::JplRole::ServiceToken
+      Path: /account-managed/hyp3/
       AssumeRolePolicyDocument:
         Version: 2012-10-17
         Statement:
@@ -95,8 +101,10 @@ Resources:
         - arn:aws:iam::aws:policy/service-role/AWSBatchServiceRole
 
   InstanceRole:
-    Type: AWS::IAM::Role
+    Type: 'Custom::JplRole'
     Properties:
+      ServiceToken: !ImportValue Custom::JplRole::ServiceToken
+      Path: /account-managed/hyp3/
       AssumeRolePolicyDocument:
         Version: 2012-10-17
         Statement:
@@ -110,6 +118,7 @@ Resources:
   InstanceProfile:
     Type: AWS::IAM::InstanceProfile
     Properties:
+      Path: /account-managed/hyp3/
       Roles:
         - !Ref InstanceRole
 
