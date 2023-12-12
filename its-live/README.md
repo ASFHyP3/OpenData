@@ -21,14 +21,14 @@ aws s3 ls s3://its-live-data/
 
 The data is organized under a collection of prefixes (folders) to ease access:
 
-* `autorift_parameters/`: A collection of [autoRIFT](https://github.com/nasa-jpl/autoRIFT/) input parameter files used by the ITS_LIVE project to product the netCDF velocity image pairs, which are located under the `velocity_image_pair` prefix
-* `catalog_geojson/`: GeoJSON catalog of the velocity image pairs
-* `composites/`: Mean annual velocities derived from the datacubes
+* `autorift_parameters/`: A collection of [autoRIFT](https://github.com/nasa-jpl/autoRIFT/) input parameter files used by the ITS_LIVE project to product the netCDF velocity image pairs
+* `catalog_geojson/`: GeoJSON catalog of the NetCDF velocity image pairs
+* `composites/`: Zarr mean annual velocities derived from the Zarr Datacubes
 * `datacubes/`: Zarr DataCubes of merged image velocity data which have been cloud-optimized for time-series analysis
-* `mosaics/`: NetCDF regionally compiled, mean annual surface velocities for major glacier-covered regions
+* `mosaics/`: NetCDF regionally compiled, mean annual surface velocities for major glacier-covered regions derived from the Zarr Datacubes
 * `rgb_mosaics/`: Cloud-optimized GeoTIFF images derived from the NetCDF mosaics for easy-use in GIS applications
-* `vel_web_tiles/`: Tiled web map PNG images derived from the NetCDF mosaics for easy-use in web applications
-* `velocity_image_pair/`: NetCDF velocity images derived from optical and SAR satellite image pairs using the autoRIFT
+* `vel_web_tiles/`: [Tiled web map](https://en.wikipedia.org/wiki/Tiled_web_map) PNG images derived from the NetCDF mosaics for easy-use in web applications
+* `velocity_image_pair/`: NetCDF velocity images derived from optical and SAR satellite image pairs using [autoRIFT](https://github.com/nasa-jpl/autoRIFT/)
 
 
 ## License
