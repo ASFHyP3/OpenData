@@ -18,7 +18,9 @@ aws_account ?= 050846374571  # Tools Sandbox
 docker:
 	AWS_PROFILE=$(profile) ./docker-build.sh $(aws_account)
 
+src_bucket ?= foo
+dst_bucket ?= foo
 s3_prefix ?= foo
 job_name ?= foo
 submit-job:
-	aws --profile $(profile) batch submit-job --job-name $(job_name) --job-queue opendata-transfer-job-queue --job-definition opendata-transfer-job-definition --parameters "s3_prefix=$(s3_prefix)"
+	aws --profile $(profile) batch submit-job --job-name $(job_name) --job-queue opendata-transfer-job-queue --job-definition opendata-transfer-job-definition --parameters "src_bucket=$(src_bucket),dst_bucket=$(dst_bucket),s3_prefix=$(s3_prefix)"
