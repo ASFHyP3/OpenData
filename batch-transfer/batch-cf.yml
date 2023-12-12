@@ -139,6 +139,8 @@ Resources:
             Value: "30000"
         Command:
           - Ref::s3_prefix
+      RetryStrategy:
+        Attempts: 3
 
   ECRRepository:
     Type: AWS::ECR::Repository
