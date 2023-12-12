@@ -84,6 +84,14 @@ Resources:
           - Effect: Allow
             Action: s3:ListBucket
             Resource: "arn:aws:s3:::its-live-open"
+          - Effect: Allow
+            Action:
+              - s3:PutObject
+              - s3:PutObjectTagging
+            Resource: "arn:aws:s3:::its-live-project/*"
+          - Effect: Allow
+            Action: s3:ListBucket
+            Resource: "arn:aws:s3:::its-live-project"
 
   BatchServiceRole:
     Type: 'Custom::JplRole'
