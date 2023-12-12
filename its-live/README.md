@@ -21,30 +21,14 @@ aws s3 ls s3://its-live-data/
 
 The data is organized under a collection of prefixes (folders) to ease access, which are described below. We've **bolded** the prefixes which are typically of the most interest to users:
 
-* `L7_PV_fix/`: 
-* `NSIDC/`: 
-* `Test/`: 
-* `autorift_parameters/`: 
-* `catalog_geojson/`: 
-* `catalog_geojson_latest/`: 
-* `catalog_geojson_original/`: 
-* `composites/`: 
-* `datacubes/`: 
-* `documentation/`: 
-* `elevation/`: 
-* `height_change/`: 
-* `ice_masks/`: 
-* `ice_shelf/`: 
-* `isce_autoRIFT/`: 
-* `month-data-logs/`: 
-* `mosaics/`: 
-* `qgis_project/`: 
-* `rgb_mosaics/`: 
-* `test/`: 
-* `test_datacubes/`: 
-* **`vel_web_tiles/`**: 
-* **`velocity_image_pair/`**: 
-* **`velocity_mosaic/`**: 
+* `autorift_parameters/`: A collection of [autoRIFT](https://github.com/nasa-jpl/autoRIFT/) input parameter files used by the ITS_LIVE project to product the netCDF velocity image pairs, which are located under the `velocity_image_pair` prefix
+* `catalog_geojson/`: GeoJSON catalog of the velocity image pairs
+* `composites/`: Mean annual velocities derived from the datacubes
+* `datacubes/`: Zarr DataCubes of merged image velocity data which have been cloud-optimized for time-series analysis
+* `mosaics/`: NetCDF regionally compiled, mean annual surface velocities for major glacier-covered regions
+* `rgb_mosaics/`: Cloud-optimized GeoTIFF images derived from the NetCDF mosaics for easy-use in GIS applications
+* `vel_web_tiles/`: Tiled web map PNG images derived from the NetCDF mosaics for easy-use in web applications
+* `velocity_image_pair/`: NetCDF velocity images derived from optical and SAR satellite image pairs using the autoRIFT
 
 
 ## License
