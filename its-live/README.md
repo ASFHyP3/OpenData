@@ -19,7 +19,7 @@ aws s3 ls s3://its-live-data/
 > [CAUTION!]
 > There are over 1 billion objects in the `its-live-data` bucket. Recursively listing the whole bucket is **not** recommended.
 
-The data is organized under a collection of prefixes (folders) to ease access, which are described below. We've **bolded** the prefixes which are typically of the most interest to users:
+The data is organized under a collection of prefixes (folders) to ease access:
 
 * `autorift_parameters/`: A collection of [autoRIFT](https://github.com/nasa-jpl/autoRIFT/) input parameter files used by the ITS_LIVE project to product the netCDF velocity image pairs, which are located under the `velocity_image_pair` prefix
 * `catalog_geojson/`: GeoJSON catalog of the velocity image pairs
