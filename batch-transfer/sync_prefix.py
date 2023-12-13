@@ -8,6 +8,8 @@ CLOUDWATCH_ALARM_NAME = 'asjohnston-its-live-project-5xx-errors'
 JOB_QUEUE = 'opendata-transfer-job-queue'
 JOB_DEFINITION = 'opendata-transfer-job-definition'
 MAX_JOBS = 250
+BATCH_SIZE = 20
+MINUTES = 3
 
 os.environ['AWS_PROFILE'] = 'its-live'
 
@@ -32,8 +34,8 @@ def get_sub_prefixes(src_bucket: str, prefix: str) -> list[str]:
     return sorted(prefix['Prefix'] for prefix in sub_prefixes)
 
 
-def get_batch_jobs(job_name_prefix: str) -> tuple[list[str], list[str]]:
-    # Returns names of SUCCEEDED jobs and names of in-progress jobs
+def get_batch_jobs(job_name_prefix: str) -> tuple[list[str], list[str], int]:
+    # Returns names of SUCCEEDED jobs, names of in-progress jobs, and count of pre-RUNNING jobs
 
     params = {
         'jobQueue': JOB_QUEUE,
@@ -52,6 +54,7 @@ def get_batch_jobs(job_name_prefix: str) -> tuple[list[str], list[str]]:
     return (
         [job['jobName'] for job in jobs if job['status'] == 'SUCCEEDED'],
         [job['jobName'] for job in jobs if job['status'] not in ('SUCCEEDED', 'FAILED')],
+        sum(job['status'] not in ('RUNNING', 'SUCCEEDED', 'FAILED') for job in jobs),
     )
 
 
@@ -110,7 +113,7 @@ def main():
     print(f'Batch job name prefix: {job_name_prefix}')
 
     while True:
-        succeeded_jobs, in_progress_jobs = get_batch_jobs(job_name_prefix)
+        succeeded_jobs, in_progress_jobs, pre_running_count = get_batch_jobs(job_name_prefix)
 
         succeeded_prefixes = {
             get_s3_prefix_from_job_name(job_name, args.src_bucket, args.dst_bucket)
@@ -135,19 +138,18 @@ def main():
         ]
         print(f'{len(prefixes_to_submit)} remaining prefixes to submit')
 
-        number_to_submit = min([MAX_JOBS - len(in_progress_jobs), 20])
-        minutes = 5
-
-        batch_of_prefixes = prefixes_to_submit[:number_to_submit]
-
-        if not alarm_5xx_errors():
-            submit_jobs(args.src_bucket, args.dst_bucket, batch_of_prefixes)
-        else:
+        if pre_running_count >= 10:
+            print(f'Got {pre_running_count} >= 10 pre-RUNNING Batch jobs, skipping submit jobs')
+        elif alarm_5xx_errors():
             print('Got alarm for 5xx errors, skipping submit jobs')
+        else:
+            print(f'Got {pre_running_count} < 10 pre-RUNNING Batch jobs')
+            number_to_submit = min([MAX_JOBS - len(in_progress_jobs), BATCH_SIZE])
+            batch_of_prefixes = prefixes_to_submit[:number_to_submit]
+            submit_jobs(args.src_bucket, args.dst_bucket, batch_of_prefixes)
 
-        print(f'Sleeping for {minutes} minutes...')
-
-        time.sleep(minutes*60)
+        print(f'Sleeping for {MINUTES} minutes...')
+        time.sleep(MINUTES*60)
 
         # TODO error handling
 
