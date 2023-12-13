@@ -6,6 +6,7 @@ import boto3
 
 JOB_QUEUE = 'opendata-transfer-job-queue'
 JOB_DEFINITION = 'opendata-transfer-job-definition'
+MAX_JOBS = 250
 
 os.environ['AWS_PROFILE'] = 'its-live'
 
@@ -23,7 +24,7 @@ def get_sub_prefixes(src_bucket: str, prefix: str) -> list[str]:
 
 
 def get_batch_jobs(job_name_prefix: str) -> tuple[list[str], list[str], int]:
-    # Returns names of SUCCEEDED jobs, names of non-FAILED jobs, and number of RUNNING jobs
+    # Returns names of SUCCEEDED jobs, names of non-FAILED jobs, and number of in-progress jobs
 
     params = {
         'jobQueue': JOB_QUEUE,
@@ -42,7 +43,7 @@ def get_batch_jobs(job_name_prefix: str) -> tuple[list[str], list[str], int]:
     return (
         [job['jobName'] for job in jobs if job['status'] == 'SUCCEEDED'],
         [job['jobName'] for job in jobs if job['status'] != 'FAILED'],
-        sum(job['status'] == 'RUNNING' for job in jobs),
+        sum(job['status'] not in ('SUCCEEDED', 'FAILED') for job in jobs),
     )
 
 
@@ -100,7 +101,7 @@ def main():
     print(f'Batch job name prefix: {job_name_prefix}')
 
     while True:
-        succeeded_jobs, non_failed_jobs, running_count = get_batch_jobs(job_name_prefix)
+        succeeded_jobs, non_failed_jobs, in_progress_count = get_batch_jobs(job_name_prefix)
 
         succeeded_prefixes = {
             get_s3_prefix_from_job_name(job_name, args.src_bucket, args.dst_bucket)
@@ -118,13 +119,13 @@ def main():
         }
         print(f'Got {len(non_failed_prefixes)} non-FAILED Batch jobs')
 
-        print(f'Got {running_count} RUNNING Batch jobs')
+        print(f'Got {in_progress_count} in-progress Batch jobs')
 
         prefixes_to_submit = [prefix for prefix in prefixes if prefix not in non_failed_prefixes]
         print(f'{len(prefixes_to_submit)} remaining prefixes to submit')
 
-        number_to_submit = max([running_count, 10])
-        minutes = 20
+        number_to_submit = min([MAX_JOBS - in_progress_count, 10])
+        minutes = 1
 
         batch_of_prefixes = prefixes_to_submit[:number_to_submit]
 
