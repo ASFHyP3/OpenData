@@ -123,8 +123,8 @@ def main():
         prefixes_to_submit = [prefix for prefix in prefixes if prefix not in non_failed_prefixes]
         print(f'{len(prefixes_to_submit)} remaining prefixes to submit')
 
-        number_to_submit = int(running_count / 2)
-        minutes = 10
+        number_to_submit = max([running_count, 10])
+        minutes = 20
 
         batch_of_prefixes = prefixes_to_submit[:number_to_submit]
 
