@@ -135,8 +135,8 @@ def main():
         ]
         print(f'{len(prefixes_to_submit)} remaining prefixes to submit')
 
-        number_to_submit = min([MAX_JOBS - len(in_progress_jobs), 10])
-        minutes = 1
+        number_to_submit = min([MAX_JOBS - len(in_progress_jobs), 20])
+        minutes = 5
 
         batch_of_prefixes = prefixes_to_submit[:number_to_submit]
 
