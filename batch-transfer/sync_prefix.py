@@ -94,6 +94,11 @@ def get_s3_prefix_from_job_name(job_name: str, expected_src: str, expected_dst: 
     return s3_prefix
 
 
+def sleep() -> None:
+    print(f'Sleeping for {MINUTES} minutes...')
+    time.sleep(MINUTES * 60)
+
+
 def main():
     # Tests:
     assert get_job_name('foo', 'bar', 'path/to/file/') == 'foo--bar--path--to--file'
@@ -113,7 +118,12 @@ def main():
     print(f'Batch job name prefix: {job_name_prefix}')
 
     while True:
-        succeeded_jobs, in_progress_jobs, pre_running_count = get_batch_jobs(job_name_prefix)
+        try:
+            succeeded_jobs, in_progress_jobs, pre_running_count = get_batch_jobs(job_name_prefix)
+        except Exception as e:
+            print(f'Got exception from get_batch_jobs: {e}')
+            sleep()
+            continue
 
         succeeded_prefixes = {
             get_s3_prefix_from_job_name(job_name, args.src_bucket, args.dst_bucket)
@@ -140,19 +150,24 @@ def main():
 
         if pre_running_count >= 10:
             print(f'Got {pre_running_count} >= 10 pre-RUNNING Batch jobs, skipping submit jobs')
-        elif alarm_5xx_errors():
-            print(f'Got {pre_running_count} < 10 pre-RUNNING Batch jobs')
-            print('Got alarm for 5xx errors, skipping submit jobs')
         else:
             print(f'Got {pre_running_count} < 10 pre-RUNNING Batch jobs')
-            number_to_submit = min([MAX_JOBS - len(in_progress_jobs), BATCH_SIZE])
-            batch_of_prefixes = prefixes_to_submit[:number_to_submit]
-            submit_jobs(args.src_bucket, args.dst_bucket, batch_of_prefixes)
 
-        print(f'Sleeping for {MINUTES} minutes...')
-        time.sleep(MINUTES*60)
+            try:
+                alarm = alarm_5xx_errors()
+            except Exception as e:
+                print(f'Got error from alarm_5xx_errors: {e}')
+                sleep()
+                continue
 
-        # TODO error handling
+            if alarm:
+                print('Got alarm for 5xx errors, skipping submit jobs')
+            else:
+                number_to_submit = min([MAX_JOBS - len(in_progress_jobs), BATCH_SIZE])
+                batch_of_prefixes = prefixes_to_submit[:number_to_submit]
+                submit_jobs(args.src_bucket, args.dst_bucket, batch_of_prefixes)
+
+        sleep()
 
 
 if __name__ == '__main__':
