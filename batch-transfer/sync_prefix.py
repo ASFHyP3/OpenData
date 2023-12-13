@@ -1,15 +1,11 @@
 import argparse
 import os
-import time
 
 import boto3
 
 CLOUDWATCH_ALARM_NAME = 'asjohnston-its-live-project-5xx-errors'
 JOB_QUEUE = 'opendata-transfer-job-queue'
 JOB_DEFINITION = 'opendata-transfer-job-definition'
-MAX_JOBS = 250
-BATCH_SIZE = 20
-MINUTES = 3
 
 os.environ['AWS_PROFILE'] = 'its-live'
 
@@ -34,8 +30,8 @@ def get_sub_prefixes(src_bucket: str, prefix: str) -> list[str]:
     return sorted(prefix['Prefix'] for prefix in sub_prefixes)
 
 
-def get_batch_jobs(job_name_prefix: str) -> tuple[list[str], list[str], int]:
-    # Returns names of SUCCEEDED jobs, names of in-progress jobs, and count of pre-RUNNING jobs
+def get_batch_jobs(job_name_prefix: str) -> tuple[list[str], list[str]]:
+    # Returns names of SUCCEEDED jobs and names of in-progress jobs
 
     params = {
         'jobQueue': JOB_QUEUE,
@@ -54,7 +50,6 @@ def get_batch_jobs(job_name_prefix: str) -> tuple[list[str], list[str], int]:
     return (
         [job['jobName'] for job in jobs if job['status'] == 'SUCCEEDED'],
         [job['jobName'] for job in jobs if job['status'] not in ('SUCCEEDED', 'FAILED')],
-        sum(job['status'] not in ('RUNNING', 'SUCCEEDED', 'FAILED') for job in jobs),
     )
 
 
@@ -94,11 +89,6 @@ def get_s3_prefix_from_job_name(job_name: str, expected_src: str, expected_dst: 
     return s3_prefix
 
 
-def sleep() -> None:
-    print(f'Sleeping for {MINUTES} minutes...')
-    time.sleep(MINUTES * 60)
-
-
 def main():
     # Tests:
     assert get_job_name('foo', 'bar', 'path/to/file/') == 'foo--bar--path--to--file'
@@ -117,57 +107,32 @@ def main():
     job_name_prefix = get_job_name(args.src_bucket, args.dst_bucket, args.s3_prefix) + '--'
     print(f'Batch job name prefix: {job_name_prefix}')
 
-    while True:
-        try:
-            succeeded_jobs, in_progress_jobs, pre_running_count = get_batch_jobs(job_name_prefix)
-        except Exception as e:
-            print(f'Got exception from get_batch_jobs: {e}')
-            sleep()
-            continue
+    succeeded_jobs, in_progress_jobs = get_batch_jobs(job_name_prefix)
 
-        succeeded_prefixes = {
-            get_s3_prefix_from_job_name(job_name, args.src_bucket, args.dst_bucket)
-            for job_name in succeeded_jobs
-        }
-        print(f'Got {len(succeeded_jobs)} SUCCEEDED Batch jobs')
+    succeeded_prefixes = {
+        get_s3_prefix_from_job_name(job_name, args.src_bucket, args.dst_bucket)
+        for job_name in succeeded_jobs
+    }
+    print(f'Got {len(succeeded_jobs)} SUCCEEDED Batch jobs')
 
-        if succeeded_prefixes == set(prefixes):
-            print('All prefixes have transferred successfully')
-            break
+    if succeeded_prefixes == set(prefixes):
+        print('All prefixes have transferred successfully')
+        return
 
-        in_progress_prefixes = {
-            get_s3_prefix_from_job_name(job_name, args.src_bucket, args.dst_bucket)
-            for job_name in in_progress_jobs
-        }
-        print(f'Got {len(in_progress_jobs)} in-progress Batch jobs')
+    in_progress_prefixes = {
+        get_s3_prefix_from_job_name(job_name, args.src_bucket, args.dst_bucket)
+        for job_name in in_progress_jobs
+    }
+    print(f'Got {len(in_progress_jobs)} in-progress Batch jobs')
 
-        prefixes_to_submit = [
-            prefix for prefix in prefixes
-            if prefix not in succeeded_prefixes
-            and prefix not in in_progress_prefixes
-        ]
-        print(f'{len(prefixes_to_submit)} remaining prefixes to submit')
+    prefixes_to_submit = [
+        prefix for prefix in prefixes
+        if prefix not in succeeded_prefixes
+        and prefix not in in_progress_prefixes
+    ]
+    print(f'{len(prefixes_to_submit)} remaining prefixes to submit')
 
-        if pre_running_count >= 10:
-            print(f'Got {pre_running_count} >= 10 pre-RUNNING Batch jobs, skipping submit jobs')
-        else:
-            print(f'Got {pre_running_count} < 10 pre-RUNNING Batch jobs')
-
-            try:
-                alarm = alarm_5xx_errors()
-            except Exception as e:
-                print(f'Got error from alarm_5xx_errors: {e}')
-                sleep()
-                continue
-
-            if alarm:
-                print('Got alarm for 5xx errors, skipping submit jobs')
-            else:
-                number_to_submit = min([MAX_JOBS - len(in_progress_jobs), BATCH_SIZE])
-                batch_of_prefixes = prefixes_to_submit[:number_to_submit]
-                submit_jobs(args.src_bucket, args.dst_bucket, batch_of_prefixes)
-
-        sleep()
+    submit_jobs(args.src_bucket, args.dst_bucket, prefixes_to_submit)
 
 
 if __name__ == '__main__':
