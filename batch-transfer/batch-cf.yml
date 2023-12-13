@@ -148,7 +148,7 @@ Resources:
           - Ref::dst_bucket
           - Ref::s3_prefix
       RetryStrategy:
-        Attempts: 3
+        Attempts: 10
 
   ECRRepository:
     Type: AWS::ECR::Repository
