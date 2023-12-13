@@ -4,6 +4,7 @@ import time
 
 import boto3
 
+CLOUDWATCH_ALARM_NAME = 'asjohnston-its-live-project-5xx-errors'
 JOB_QUEUE = 'opendata-transfer-job-queue'
 JOB_DEFINITION = 'opendata-transfer-job-definition'
 MAX_JOBS = 250
@@ -12,6 +13,14 @@ os.environ['AWS_PROFILE'] = 'its-live'
 
 batch = boto3.client('batch')
 s3 = boto3.client('s3')
+cloudwatch = boto3.client('cloudwatch')
+
+
+def alarm_5xx_errors() -> bool:
+    return cloudwatch.describe_alarms(
+        AlarmNames=[CLOUDWATCH_ALARM_NAME],
+        AlarmTypes=['MetricAlarm'],
+    )['MetricAlarms'][0]['StateValue'] == 'ALARM'
 
 
 def get_sub_prefixes(src_bucket: str, prefix: str) -> list[str]:
@@ -90,7 +99,8 @@ def main():
 
     parser = argparse.ArgumentParser()
     parser.add_argument('src_bucket')
-    parser.add_argument('dst_bucket')
+    # TODO: add more dst choices after adding more 5xx alarms (and don't use constant for alarm name)
+    parser.add_argument('dst_bucket', choices=['its-live-project'])
     parser.add_argument('s3_prefix', help='Omit leading / but include trailing /, e.g. foo/bar/')
     args = parser.parse_args()
 
@@ -129,7 +139,10 @@ def main():
 
         batch_of_prefixes = prefixes_to_submit[:number_to_submit]
 
-        submit_jobs(args.src_bucket, args.dst_bucket, batch_of_prefixes)
+        if not alarm_5xx_errors():
+            submit_jobs(args.src_bucket, args.dst_bucket, batch_of_prefixes)
+        else:
+            print('Got alarm for 5xx errors, skipping submit jobs')
 
         print(f'Sleeping for {minutes} minutes...')
 
