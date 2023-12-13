@@ -141,6 +141,7 @@ def main():
         if pre_running_count >= 10:
             print(f'Got {pre_running_count} >= 10 pre-RUNNING Batch jobs, skipping submit jobs')
         elif alarm_5xx_errors():
+            print(f'Got {pre_running_count} < 10 pre-RUNNING Batch jobs')
             print('Got alarm for 5xx errors, skipping submit jobs')
         else:
             print(f'Got {pre_running_count} < 10 pre-RUNNING Batch jobs')
