@@ -3,7 +3,7 @@ import os
 
 import boto3
 
-CLOUDWATCH_ALARM_NAME = 'asjohnston-its-live-project-5xx-errors'
+CLOUDWATCH_ALARM_NAME = 'asjohnston-its-live-project-5xx-errors'  # for its-live-project bucket
 JOB_QUEUE = 'opendata-transfer-job-queue'
 JOB_DEFINITION = 'opendata-transfer-job-definition'
 
@@ -96,8 +96,7 @@ def main():
 
     parser = argparse.ArgumentParser()
     parser.add_argument('src_bucket')
-    # TODO: add more dst choices after adding more 5xx alarms (and don't use constant for alarm name)
-    parser.add_argument('dst_bucket', choices=['its-live-project'])
+    parser.add_argument('dst_bucket')
     parser.add_argument('s3_prefix', help='Omit leading / but include trailing /, e.g. foo/bar/')
     args = parser.parse_args()
 
