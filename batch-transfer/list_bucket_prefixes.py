@@ -27,7 +27,6 @@ def list_bucket_prefixes(bucket: str, prefix: str = '', depth: int = 2):
     return all_prefixes
 
 
-
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument('--bucket', default='its-live-data', help='AWS S3 bucket to list prefixes for')
