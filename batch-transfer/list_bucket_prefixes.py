@@ -15,7 +15,7 @@ def _get_common_prefixes(bucket, prefix):
 
 
 def list_bucket_prefixes(bucket: str, prefix: str = '', depth: int = 2):
-    log.info(f'Listing prefixes for s3://{bucket} {depth} levels deep')
+    log.info(f'Listing prefixes for s3://{bucket}/{prefix} {depth} levels deep')
 
     all_prefixes = _get_common_prefixes(bucket, prefix)
     if depth > 0:
