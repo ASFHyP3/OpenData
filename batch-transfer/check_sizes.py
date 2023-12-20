@@ -38,12 +38,34 @@ def include_key_open(key: str) -> bool:
     return not any(key.startswith(prefix) for prefix in bad_prefixes)
 
 
+def include_key_data(key: str) -> bool:
+    open_prefixes = [
+        'autorift_parameters/',
+        'catalog_geojson/',
+        'composites/',
+        'datacubes/',
+        'mosaics/',
+        'rgb_mosaics/',
+        'vel_web_tiles/',
+        'velocity_image_pair/landsatOLI/',
+        'velocity_image_pair/sentinel1/',
+        'velocity_image_pair/sentinel2/',
+    ]
+    return any(key.startswith(prefix) for prefix in open_prefixes)
+
+
 def main():
+    # path = download_inventory(
+    #     'open',
+    #     's3-inventory//its-live-open/its-live-open-inventory/2023-12-19T01-00Z/manifest.json'
+    # )
+    # include_key = include_key_open
+
     path = download_inventory(
-        'open',
-        's3-inventory//its-live-open/its-live-open-inventory/2023-12-19T01-00Z/manifest.json'
+        'data',
+        's3-inventory/its-live-data/its-live-data-inventory/2023-12-19T01-00Z/manifest.json'
     )
-    include_key = include_key_open
+    include_key = include_key_data
 
     total = 0
     gzfiles = glob(f'{path}/*.csv.gz')
