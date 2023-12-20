@@ -18,13 +18,16 @@ def download_inventory(name: str, manifest_path: str) -> str:
 
     keys = [file['key'] for file in manifest['files']]
     for count, key in enumerate(keys, start=1):
-        print(f'{count}/{len(keys)} {key}')
-        subprocess.run(
-            ['aws', '--profile', 'its-live', 's3', 'cp',
-             f's3://its-live-project/{key}',
-             f'{name}-inventory/'],
-            check=True
-        )
+        print(f'{count}/{len(keys)}')
+        if not os.path.exists(f'{name}-inventory/{key.split("/")[-1]}'):
+            subprocess.run(
+                ['aws', '--profile', 'its-live', 's3', 'cp',
+                 f's3://its-live-project/{key}',
+                 f'{name}-inventory/'],
+                check=True
+            )
+        else:
+            print('Already exists, skipping download')
 
     return f'{name}-inventory'
 
@@ -34,16 +37,22 @@ def main():
         'open',
         's3-inventory//its-live-open/its-live-open-inventory/2023-12-19T01-00Z/manifest.json'
     )
+    bad_prefixes = ['L7_PV_fix/', 'NSIDC/', 'Test/', 'catalog_geojson_latest/', 'catalog_geojson_original/']
+
     total = 0
     gzfiles = glob(f'{path}/*.csv.gz')
     for count, gzfile in enumerate(gzfiles, start=1):
         print(f'{count}/{len(gzfiles)} {gzfile}')
-        subprocess.run(['gunzip', gzfile], check=True)
+        subprocess.run(['gunzip', '--keep', gzfile], check=True)
         csvfile = gzfile.removesuffix('.gz')
         with open(csvfile) as f:
             for line in f:
-                total += int(line.strip('\n').split(',')[2].strip('"'))
-                print(total, end='\r')
+                row = line.strip('\n').split(',')
+                key = row[1].strip('"')
+                size = int(row[2].strip('"'))
+                if not any(key.startswith(prefix) for prefix in bad_prefixes):
+                    total += size
+                    print(total, end='\r')
         print()
         os.remove(csvfile)
     print(f'Total size: {total}')
