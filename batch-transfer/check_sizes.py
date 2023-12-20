@@ -33,12 +33,17 @@ def download_inventory(name: str, manifest_path: str) -> str:
     return f'{name}-inventory'
 
 
+def include_key_open(key: str) -> bool:
+    bad_prefixes = ['L7_PV_fix/', 'NSIDC/', 'Test/', 'catalog_geojson_latest/', 'catalog_geojson_original/']
+    return not any(key.startswith(prefix) for prefix in bad_prefixes)
+
+
 def main():
     path = download_inventory(
         'open',
         's3-inventory//its-live-open/its-live-open-inventory/2023-12-19T01-00Z/manifest.json'
     )
-    bad_prefixes = ['L7_PV_fix/', 'NSIDC/', 'Test/', 'catalog_geojson_latest/', 'catalog_geojson_original/']
+    include_key = include_key_open
 
     total = 0
     gzfiles = glob(f'{path}/*.csv.gz')
@@ -50,9 +55,8 @@ def main():
             for line in f:
                 row = line.strip('\n').split(',')
                 key = row[1].strip('"')
-                size = int(row[2].strip('"'))
-                if not any(key.startswith(prefix) for prefix in bad_prefixes):
-                    total += size
+                if include_key(key):
+                    total += int(row[2].strip('"'))
                     print(total, end='\r')
         print()
         os.remove(csvfile)
