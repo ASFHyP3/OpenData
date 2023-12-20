@@ -5,7 +5,8 @@ from glob import glob
 
 
 def download_inventory(name: str, manifest_path: str) -> str:
-    os.mkdir(f'{name}-inventory/')
+    if not os.path.exists(f'{name}-inventory/'):
+        os.mkdir(f'{name}-inventory/')
 
     subprocess.run(
         ['aws', '--profile', 'its-live', 's3', 'cp',
