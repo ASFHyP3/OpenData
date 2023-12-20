@@ -1,3 +1,4 @@
+import argparse
 import json
 import os
 import subprocess
@@ -38,7 +39,7 @@ def include_key_open(key: str) -> bool:
     return not any(key.startswith(prefix) for prefix in bad_prefixes)
 
 
-def include_key_data(key: str) -> bool:
+def include_key_data_for_open(key: str) -> bool:
     open_prefixes = [
         'autorift_parameters/',
         'catalog_geojson/',
@@ -55,17 +56,24 @@ def include_key_data(key: str) -> bool:
 
 
 def main():
-    # path = download_inventory(
-    #     'open',
-    #     's3-inventory//its-live-open/its-live-open-inventory/2023-12-19T01-00Z/manifest.json'
-    # )
-    # include_key = include_key_open
+    parser = argparse.ArgumentParser()
+    parser.add_argument('cmd', choices=['actual-open', 'expected-open'])
+    args = parser.parse_args()
 
-    path = download_inventory(
-        'data',
-        's3-inventory/its-live-data/its-live-data-inventory/2023-12-19T01-00Z/manifest.json'
-    )
-    include_key = include_key_data
+    if args.cmd == 'actual-open':
+        path = download_inventory(
+            'open',
+            's3-inventory//its-live-open/its-live-open-inventory/2023-12-19T01-00Z/manifest.json'
+        )
+        include_key = include_key_open
+    elif args.cmd == 'expected-open':
+        path = download_inventory(
+            'data',
+            's3-inventory/its-live-data/its-live-data-inventory/2023-12-19T01-00Z/manifest.json'
+        )
+        include_key = include_key_data_for_open
+    else:
+        raise ValueError(f'Command {args.cmd} not recognized')
 
     total = 0
     gzfiles = glob(f'{path}/*.csv.gz')
