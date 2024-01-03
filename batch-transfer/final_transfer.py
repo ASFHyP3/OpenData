@@ -99,7 +99,6 @@ def main():
 
     prefixes.sort()
     print(f'Total prefixes: {len(prefixes)}')
-    breakpoint()
 
     succeeded_jobs, in_progress_jobs = get_batch_jobs()
 
