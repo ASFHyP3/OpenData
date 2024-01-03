@@ -1,0 +1,23 @@
+{
+    "prefixes": [
+        "autorift_parameters/",
+        "catalog_geojson/",
+        "height_change/",
+        "mosaics/",
+        "rgb_mosaics/",
+        "vel_web_tiles/",
+        "velocity_mosaic/",
+        "ice_masks/",
+        "composites/annual/v02_bad_v_error/",
+        "composites/annual/v02_latest/",
+        "composites/annual/v02_old_phase_amp/",
+        "composites/annual/v02/",
+        "composites/annual/v2/",
+        "velocity_image_pair/sentinel1/v02/"
+    ],
+    "large_prefixes": [
+        "datacubes/v2/",
+        "velocity_image_pair/landsatOLI/v02/",
+        "velocity_image_pair/sentinel2/v02/"
+    ]
+}
