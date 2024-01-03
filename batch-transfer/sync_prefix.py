@@ -1,9 +1,12 @@
 import argparse
+import json
 import os
 
 import boto3
 
-CLOUDWATCH_ALARM_NAME = 'asjohnston-its-live-project-5xx-errors'  # for its-live-project bucket
+SRC_BUCKET = 'its-live-open'
+DST_BUCKET = 'its-live-data'
+
 JOB_QUEUE = 'opendata-transfer-job-queue'
 JOB_DEFINITION = 'opendata-transfer-job-definition'
 
@@ -11,32 +14,24 @@ os.environ['AWS_PROFILE'] = 'its-live'
 
 batch = boto3.client('batch')
 s3 = boto3.client('s3')
-cloudwatch = boto3.client('cloudwatch')
 
 
-def alarm_5xx_errors() -> bool:
-    return cloudwatch.describe_alarms(
-        AlarmNames=[CLOUDWATCH_ALARM_NAME],
-        AlarmTypes=['MetricAlarm'],
-    )['MetricAlarms'][0]['StateValue'] == 'ALARM'
-
-
-def get_sub_prefixes(src_bucket: str, prefix: str) -> list[str]:
+def get_sub_prefixes(prefix: str) -> list[str]:
     sub_prefixes = s3.list_objects_v2(
-        Bucket=src_bucket,
+        Bucket=SRC_BUCKET,
         Prefix=prefix,
         Delimiter='/',
     )['CommonPrefixes']
-    return sorted(prefix['Prefix'] for prefix in sub_prefixes)
+    return [prefix['Prefix'] for prefix in sub_prefixes]
 
 
-def get_batch_jobs(job_name_prefix: str) -> tuple[list[str], list[str]]:
+def get_batch_jobs() -> tuple[list[str], list[str]]:
     # Returns names of SUCCEEDED jobs and names of in-progress jobs
 
     params = {
         'jobQueue': JOB_QUEUE,
         'maxResults': 100,
-        'filters': [{'name': 'JOB_NAME', 'values': [job_name_prefix + '*']}],
+        'filters': [{'name': 'JOB_NAME', 'values': ['final-transfer-*']}],
     }
 
     jobs = []
@@ -53,75 +48,69 @@ def get_batch_jobs(job_name_prefix: str) -> tuple[list[str], list[str]]:
     )
 
 
-def submit_jobs(src_bucket: str, dst_bucket: str, s3_prefixes: list[str]) -> None:
+def submit_jobs(s3_prefixes: list[str], submit: bool) -> None:
     for count, prefix in enumerate(s3_prefixes, start=1):
-        response = batch.submit_job(
-            jobName=get_job_name(src_bucket, dst_bucket, prefix),
-            jobQueue=JOB_QUEUE,
-            jobDefinition=JOB_DEFINITION,
-            parameters={
-                'src_bucket': src_bucket,
-                'dst_bucket': dst_bucket,
-                's3_prefix': prefix
-            }
-        )
-        print(f'{count}/{len(s3_prefixes)} Submitted job {response["jobName"]}')
+        job_name = get_job_name(prefix)
+        print(f'{count}/{len(s3_prefixes)} Submitting job {job_name}')
+        if submit:
+            batch.submit_job(
+                jobName=job_name,
+                jobQueue=JOB_QUEUE,
+                jobDefinition=JOB_DEFINITION,
+                parameters={
+                    'src_bucket': SRC_BUCKET,
+                    'dst_bucket': DST_BUCKET,
+                    's3_prefix': prefix,
+                }
+            )
 
 
-def get_job_name(src_bucket: str, dst_bucket: str, s3_prefix: str) -> str:
+def get_job_name(s3_prefix: str) -> str:
     assert not s3_prefix.startswith('/')
     assert s3_prefix.endswith('/')
-    prefix_name = s3_prefix[:-1].replace('/', '--')
-    return '--'.join([src_bucket, dst_bucket, prefix_name])
+    return 'final-transfer-' + s3_prefix[:-1].replace('/', '--')
 
 
-def parse_job_name(job_name: str) -> tuple[str, str, str]:
-    parts = job_name.split('--')
-    src_bucket, dst_bucket = parts[:2]
-    s3_prefix = '/'.join(parts[2:]) + '/'
-    return src_bucket, dst_bucket, s3_prefix
-
-
-def get_s3_prefix_from_job_name(job_name: str, expected_src: str, expected_dst: str) -> str:
-    src_bucket, dst_bucket, s3_prefix = parse_job_name(job_name)
-    assert src_bucket == expected_src
-    assert dst_bucket == expected_dst
-    return s3_prefix
+def parse_job_name(job_name: str) -> str:
+    assert job_name.startswith('final-transfer-')
+    return job_name.removeprefix('final-transfer-').replace('--', '/') + '/'
 
 
 def main():
     # Tests:
-    assert get_job_name('foo', 'bar', 'path/to/file/') == 'foo--bar--path--to--file'
-    assert parse_job_name('foo--bar--path--to--file') == ('foo', 'bar', 'path/to/file/')
+    assert get_job_name('path/to/prefix/') == 'final-transfer-path--to--prefix'
+    assert parse_job_name('final-transfer-path--to--prefix') == 'path/to/prefix/'
 
     parser = argparse.ArgumentParser()
-    parser.add_argument('src_bucket')
-    parser.add_argument('dst_bucket')
-    parser.add_argument('s3_prefix', help='Omit leading / but include trailing /, e.g. foo/bar/')
+    parser.add_argument('--submit', action='store_true', help='Do not submit jobs unless this option is given')
     args = parser.parse_args()
 
-    prefixes = get_sub_prefixes(args.src_bucket, args.s3_prefix)
-    print(f'Got {len(prefixes)} S3 sub-prefixes')
+    if not args.submit:
+        print('(DRY RUN)')
 
-    job_name_prefix = get_job_name(args.src_bucket, args.dst_bucket, args.s3_prefix) + '--'
-    print(f'Batch job name prefix: {job_name_prefix}')
+    with open('final-transfer-prefixes.json') as f:
+        final_transfer_prefixes = json.load(f)
 
-    succeeded_jobs, in_progress_jobs = get_batch_jobs(job_name_prefix)
+    prefixes = final_transfer_prefixes['prefixes']
+    large_prefixes = final_transfer_prefixes['large_prefixes']
 
-    succeeded_prefixes = {
-        get_s3_prefix_from_job_name(job_name, args.src_bucket, args.dst_bucket)
-        for job_name in succeeded_jobs
-    }
+    for prefix in large_prefixes:
+        prefixes.extend(get_sub_prefixes(prefix))
+
+    prefixes.sort()
+    print(f'Total prefixes: {len(prefixes)}')
+    breakpoint()
+
+    succeeded_jobs, in_progress_jobs = get_batch_jobs()
+
+    succeeded_prefixes = {parse_job_name(job_name) for job_name in succeeded_jobs}
     print(f'Got {len(succeeded_jobs)} SUCCEEDED Batch jobs')
 
     if succeeded_prefixes == set(prefixes):
         print('All prefixes have transferred successfully')
         return
 
-    in_progress_prefixes = {
-        get_s3_prefix_from_job_name(job_name, args.src_bucket, args.dst_bucket)
-        for job_name in in_progress_jobs
-    }
+    in_progress_prefixes = {parse_job_name(job_name) for job_name in in_progress_jobs}
     print(f'Got {len(in_progress_jobs)} in-progress Batch jobs')
 
     prefixes_to_submit = [
@@ -131,7 +120,7 @@ def main():
     ]
     print(f'{len(prefixes_to_submit)} remaining prefixes to submit')
 
-    submit_jobs(args.src_bucket, args.dst_bucket, prefixes_to_submit)
+    submit_jobs(prefixes_to_submit, args.submit)
 
 
 if __name__ == '__main__':
