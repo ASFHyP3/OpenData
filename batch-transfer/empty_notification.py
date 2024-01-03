@@ -11,7 +11,7 @@ sns_client = boto3.client('sns')
 
 
 def _bucket_is_empty(bucket: str) -> bool:
-    results = s3_client.list_objects(Bucket=bucket, Delimiter='/')
+    results = s3_client.list_objects_v2(Bucket=bucket, Delimiter='/')
 
     if len(results.get('CommonPrefixes', [])) > 0:
         log.debug(results['CommonPrefixes'])
