@@ -35,8 +35,7 @@ def download_inventory(name: str, manifest_path: str) -> str:
 
 
 def include_key_open(key: str) -> bool:
-    bad_prefixes = ['L7_PV_fix/', 'NSIDC/', 'Test/', 'catalog_geojson_latest/', 'catalog_geojson_original/']
-    return not any(key.startswith(prefix) for prefix in bad_prefixes)
+    return True
 
 
 def include_key_data_for_open(key: str) -> bool:
@@ -45,12 +44,17 @@ def include_key_data_for_open(key: str) -> bool:
         'catalog_geojson/',
         'composites/',
         'datacubes/',
+        'documentation/',
+        'height_change/',
+        'ice_masks/',
         'mosaics/',
+        'qgis_project/',
         'rgb_mosaics/',
         'vel_web_tiles/',
         'velocity_image_pair/landsatOLI/',
         'velocity_image_pair/sentinel1/',
         'velocity_image_pair/sentinel2/',
+        'velocity_mosaic/',
     ]
     return any(key.startswith(prefix) for prefix in open_prefixes)
 
@@ -63,13 +67,13 @@ def main():
     if args.cmd == 'actual-open':
         path = download_inventory(
             'open',
-            's3-inventory//its-live-open/its-live-open-inventory/2023-12-19T01-00Z/manifest.json'
+            's3-inventory//its-live-open/its-live-open-inventory/2024-01-03T01-00Z/manifest.json'
         )
         include_key = include_key_open
     elif args.cmd == 'expected-open':
         path = download_inventory(
             'data',
-            's3-inventory/its-live-data/its-live-data-inventory/2023-12-19T01-00Z/manifest.json'
+            's3-inventory/its-live-data/its-live-data-inventory/2024-01-02T01-00Z/manifest.json'
         )
         include_key = include_key_data_for_open
     else:
