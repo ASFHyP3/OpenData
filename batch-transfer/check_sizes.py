@@ -46,7 +46,8 @@ def main():
 
     path = download_inventory(args.cmd, manifest_path)
 
-    total = 0
+    total_size = 0
+    total_keys = 0
     gzfiles = glob(f'{path}/*.csv.gz')
     for count, gzfile in enumerate(gzfiles, start=1):
         print(f'{count}/{len(gzfiles)} {gzfile}')
@@ -55,11 +56,13 @@ def main():
         with open(csvfile) as f:
             for line in f:
                 row = line.strip('\n').split(',')
-                total += int(row[2].strip('"'))
-                print(total, end='\r')
+                total_size += int(row[2].strip('"'))
+                total_keys += 1
+                print(total_size, total_keys, end='\r')
         print()
         os.remove(csvfile)
-    print(f'Total size: {total}')
+    print(f'Total size: {total_size}')
+    print(f'Total keys: {total_keys}')
 
 
 if __name__ == '__main__':
