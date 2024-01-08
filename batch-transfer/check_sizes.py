@@ -34,50 +34,17 @@ def download_inventory(name: str, manifest_path: str) -> str:
     return f'{name}-inventory'
 
 
-def include_key_open(key: str) -> bool:
-    return True
-
-
-def include_key_data_for_open(key: str) -> bool:
-    open_prefixes = [
-        'autorift_parameters/',
-        'catalog_geojson/',
-        'composites/',
-        'datacubes/',
-        'documentation/',
-        'height_change/',
-        'ice_masks/',
-        'mosaics/',
-        'qgis_project/',
-        'rgb_mosaics/',
-        'vel_web_tiles/',
-        'velocity_image_pair/landsatOLI/',
-        'velocity_image_pair/sentinel1/',
-        'velocity_image_pair/sentinel2/',
-        'velocity_mosaic/',
-    ]
-    return any(key.startswith(prefix) for prefix in open_prefixes)
-
-
 def main():
     parser = argparse.ArgumentParser()
-    parser.add_argument('cmd', choices=['actual-open', 'expected-open'])
+    parser.add_argument('cmd', choices=['open', 'data'])
     args = parser.parse_args()
 
-    if args.cmd == 'actual-open':
-        path = download_inventory(
-            'open',
-            's3-inventory//its-live-open/its-live-open-inventory/2024-01-03T01-00Z/manifest.json'
-        )
-        include_key = include_key_open
-    elif args.cmd == 'expected-open':
-        path = download_inventory(
-            'data',
-            's3-inventory/its-live-data/its-live-data-inventory/2024-01-02T01-00Z/manifest.json'
-        )
-        include_key = include_key_data_for_open
-    else:
-        raise ValueError(f'Command {args.cmd} not recognized')
+    manifest_path = {
+        'open': 's3-inventory//its-live-open/its-live-open-inventory/2024-01-08T01-00Z/manifest.json',
+        'data': 's3-inventory//its-live-data/its-live-data-inventory-new/2024-01-08T01-00Z/manifest.json',
+    }[args.cmd]
+
+    path = download_inventory(args.cmd, manifest_path)
 
     total = 0
     gzfiles = glob(f'{path}/*.csv.gz')
@@ -88,10 +55,8 @@ def main():
         with open(csvfile) as f:
             for line in f:
                 row = line.strip('\n').split(',')
-                key = row[1].strip('"')
-                if include_key(key):
-                    total += int(row[2].strip('"'))
-                    print(total, end='\r')
+                total += int(row[2].strip('"'))
+                print(total, end='\r')
         print()
         os.remove(csvfile)
     print(f'Total size: {total}')
