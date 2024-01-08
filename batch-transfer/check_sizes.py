@@ -3,6 +3,7 @@ import json
 import os
 import subprocess
 from glob import glob
+from pprint import pprint
 
 
 def download_inventory(name: str, manifest_path: str) -> str:
@@ -46,8 +47,7 @@ def main():
 
     path = download_inventory(args.cmd, manifest_path)
 
-    total_size = 0
-    total_keys = 0
+    prefixes = {}
     gzfiles = glob(f'{path}/*.csv.gz')
     for count, gzfile in enumerate(gzfiles, start=1):
         print(f'{count}/{len(gzfiles)} {gzfile}')
@@ -56,13 +56,20 @@ def main():
         with open(csvfile) as f:
             for line in f:
                 row = line.strip('\n').split(',')
-                total_size += int(row[2].strip('"'))
-                total_keys += 1
-                print(total_size, total_keys, end='\r')
-        print()
+                prefix = row[1].strip('"').split('/')[0]
+                size = int(row[2].strip('"'))
+                if prefix in prefixes:
+                    prefixes[prefix]['size'] += size
+                    prefixes[prefix]['keys'] += 1
+                else:
+                    prefixes[prefix] = {'size': size, 'keys': 1}
+        pprint(prefixes)
         os.remove(csvfile)
-    print(f'Total size: {total_size}')
-    print(f'Total keys: {total_keys}')
+
+    with open(f'{args.cmd}-prefixes.json', 'w') as f:
+        json.dump(prefixes, f)
+
+    print('Wrote prefixes.')
 
 
 if __name__ == '__main__':
