@@ -23,4 +23,4 @@ jobs:
 
       - name: Copy README to S3
         run: |
-          aws s3 cp ./hand/README.md s3://its-live-data/README.md
+          aws s3 cp ./its-live/README.md s3://its-live-data/README.md
