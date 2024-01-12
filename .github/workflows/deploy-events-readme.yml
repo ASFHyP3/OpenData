@@ -4,6 +4,7 @@ on:
       - main
     paths:
       - events/README.md
+      - events/index.html
 
 jobs:
   dockerize:
@@ -21,6 +22,7 @@ jobs:
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: ${{ secrets.AWS_REGION }}
 
-      - name: Copy README to S3
+      - name: Copy README and Index to S3
         run: |
           aws s3 cp ./events/README.md s3://asf-event-data/README.md
+          aws s3 cp ./events/index.html s3://asf-event-data/index.html
