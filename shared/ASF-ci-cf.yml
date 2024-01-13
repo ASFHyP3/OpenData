@@ -1,0 +1,22 @@
+AWSTemplateFormatVersion: 2010-09-09
+
+Parameters:
+  OpenDataBucketName:
+    Description: AWS S3 bucket name for uploading README and Index pages
+    Type: String
+
+Resources:
+  GithubActionsUser:
+    Type: AWS::IAM::User
+    Properties:
+      UserName: github-actions
+      Policies:
+        - PolicyName: github-actions-user-policy
+          PolicyDocument:
+            Version: 2012-10-17
+            Statement:
+              - Effect: Allow
+                Action: s3:PutObject
+                Resource:
+                 - !Sub "arn:aws:s3:::${OpenDataBucketName}/index.html"
+                 - !Sub "arn:aws:s3:::${OpenDataBucketName}/README.html"

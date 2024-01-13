@@ -1,0 +1,45 @@
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - asf-event-data/README.md
+      - shared/index.html
+
+jobs:
+  dockerize:
+    runs-on: ubuntu-latest
+    environment:
+      name: asf-event-data
+      url:  https://asf-event-data.s3.us-west-2.amazonaws.com/README.md
+
+    steps:
+      - uses: actions/checkout@v4
+
+      # To test, run:
+      #     docker run -it --rm -v ${PWD}:/github/workspace \
+      #     -e INPUT_INPUT_PATH=asf-event-data/README.md \
+      #     -e INPUT_OUTPUT_DIR=asf-event-data \
+      #     -e INPUT_BUILD_PDF=false \
+      #     ghcr.io/baileyjm02/markdown-to-pdf/markdown-to-pdf:latest
+      - name: Create asf-event-data/README.html
+        uses: baileyjm02/markdown-to-pdf@v1
+        with:
+          input_path: asf-event-data/README.md
+          output_dir: asf-event-data
+          build_pdf: false
+
+      - name: Create asf-event-data/index.html
+        run: |
+          sed "165s/\[OPENDATA_BUCKET_NAME\]/${OPENDATA_BUCKET_NAME}/" shared/index.html > asf-event-data/index.html
+
+      - uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ secrets.AWS_REGION }}
+
+      - name: Copy README and Index to S3
+        run: |
+          aws s3 cp ./asf-event-data/README.html s3://asf-event-data/README.html
+          aws s3 cp ./asf-event-data/index.html s3://asf-event-data/index.html
