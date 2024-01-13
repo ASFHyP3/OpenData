@@ -14,9 +14,9 @@ mkdir ${OPENDATA_BUCKET} && cd ${OPENDATA_BUCKET}
 ```
 
 We expect each dataset to have in its S3 bucket a top-level:
-* `README.html`, which describes the bucket (file) structure and data within. For ease of writing, an `${OPENDATA_BUCKET}/README.md` is generally created per-dataset and then transformed to this `README.html` and uploaded to the bucket via a GitHub Action, e.g., [deploy-events-readme.yml](../.github/workflows/deploy-events-files.yml) 
+* `README.html`, which describes the bucket (file) structure and data within. For ease of writing, an `${OPENDATA_BUCKET}/README.md` is generally created per-dataset and then transformed to this `README.html` and uploaded to the bucket via a GitHub Action, e.g., [deploy-asf-event-data-files.yml](../.github/workflows/deploy-asf-event-data-files.yml) 
 
-* `index.html`, which allows browser-based exploration of the bucket. A template of this file is saved in the [`shared`](../shared) directory and generally created and uploaded via a GitHub Action, e.g., [deploy-events-readme.yml](../.github/workflows/deploy-events-files.yml)
+* `index.html`, which allows browser-based exploration of the bucket. A template of this file is saved in the [`shared`](../shared) directory and generally created and uploaded via a GitHub Action, e.g., [deploy-asf-event-data-files.yml](../.github/workflows/deploy-asf-event-data-files.yml)
 
 ## CI Setup
 
@@ -33,6 +33,22 @@ aws cloudformation deploy --profile ${AWS_PROFILE} \
 >[!IMPORTANT]
 > Note: This stack should only be deployed once per AWS account.
 
+After the stack is created you'll need to create an AWS CLI access key for the `github-actions` user, which you will use in the next step.
+
 ### GitGub Actions Environment
 
-TODO
+We use a GitHub Actions Environment for each datasett to store the AWS access credentials necessary to deploy the common files.
+
+First, create a new environment by following this link:
+<https://github.com/ASFHyP3/OpenData/settings/environments/new>
+
+and name it the same as the S3 bucket (`${OPENDATA_BUCKET}`). When configuring the environment you'll want to: 
+1. set "Protected branches only" for the "Deployment branches and tags"
+2. Add these environment secrets for the `github-actions` user:
+   * `AWS_ACCESS_KEY_ID`
+   * `AWS_SECRET_ACCESS_KEY`
+   * `AWS_REGION` (typically `us-west-2`)
+
+### Deploy action
+
+Now, using [deploy-asf-event-data-files.yml](../.github/workflows/deploy-asf-event-data-files.yml) as a template, create a deploy action for your dataset.

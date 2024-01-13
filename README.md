@@ -12,6 +12,6 @@ This dataset is hosted in the `s3://asf-event-data` bucket on AWS. For more info
 
 #### Management
 
-On a merge to main, [deploy-events-readme.yml](.github/workflows/deploy-events-readme.yml) will upload to the `s3://asf-event-data` bucket:
+On a merge to main, [deploy-asf-event-data-files.yml](.github/workflows/deploy-events-readme.yml) will upload to the `s3://asf-event-data` bucket:
 * `asf-event-data/README.html`, which is automatically created from [`asf-event-data/README.md`](asf-event-data/README.md)
 * `asf-event-data/index.html`, which is automatically created from [`shared/index.html`](shared/index.html)

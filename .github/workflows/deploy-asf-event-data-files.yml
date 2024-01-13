@@ -10,7 +10,7 @@ jobs:
   dockerize:
     runs-on: ubuntu-latest
     environment:
-      name: Events
+      name: asf-event-data
       url:  https://asf-event-data.s3.us-west-2.amazonaws.com/README.md
 
     steps:
