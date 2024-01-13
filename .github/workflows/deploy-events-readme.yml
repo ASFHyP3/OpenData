@@ -4,7 +4,7 @@ on:
       - main
     paths:
       - events/README.md
-      - events/index.html
+      - shared/index.html
 
 jobs:
   dockerize:
@@ -16,6 +16,23 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      # To test, run:
+      #     docker run -it --rm -v ${PWD}:/github/workspace \
+      #     -e INPUT_INPUT_PATH=events/README.md \
+      #     -e INPUT_OUTPUT_DIR=events \
+      #     -e INPUT_BUILD_PDF=false \
+      #     ghcr.io/baileyjm02/markdown-to-pdf/markdown-to-pdf:latest
+      - name: Create events/README.html
+        uses: baileyjm02/markdown-to-pdf@v1
+        with:
+          input_path: events/README.md
+          output_dir: events
+          build_pdf: false
+
+      - name: Create events/index.html
+        run: |
+          sed "165s/\[OPENDATA_BUCKET_NAME\]/${OPENDATA_BUCKET_NAME}/" shared/index.html > events/index.html
+
       - uses: aws-actions/configure-aws-credentials@v4
         with:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
@@ -24,5 +41,5 @@ jobs:
 
       - name: Copy README and Index to S3
         run: |
-          aws s3 cp ./events/README.md s3://asf-event-data/README.md
+          aws s3 cp ./events/README.html s3://asf-event-data/README.html
           aws s3 cp ./events/index.html s3://asf-event-data/index.html
