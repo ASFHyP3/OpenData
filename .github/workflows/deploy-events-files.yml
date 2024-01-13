@@ -3,7 +3,7 @@ on:
     branches:
       - main
     paths:
-      - events/README.md
+      - asf-event-data/README.md
       - shared/index.html
 
 jobs:
@@ -18,20 +18,20 @@ jobs:
 
       # To test, run:
       #     docker run -it --rm -v ${PWD}:/github/workspace \
-      #     -e INPUT_INPUT_PATH=events/README.md \
-      #     -e INPUT_OUTPUT_DIR=events \
+      #     -e INPUT_INPUT_PATH=asf-event-data/README.md \
+      #     -e INPUT_OUTPUT_DIR=asf-event-data \
       #     -e INPUT_BUILD_PDF=false \
       #     ghcr.io/baileyjm02/markdown-to-pdf/markdown-to-pdf:latest
-      - name: Create events/README.html
+      - name: Create asf-event-data/README.html
         uses: baileyjm02/markdown-to-pdf@v1
         with:
-          input_path: events/README.md
-          output_dir: events
+          input_path: asf-event-data/README.md
+          output_dir: asf-event-data
           build_pdf: false
 
-      - name: Create events/index.html
+      - name: Create asf-event-data/index.html
         run: |
-          sed "165s/\[OPENDATA_BUCKET_NAME\]/${OPENDATA_BUCKET_NAME}/" shared/index.html > events/index.html
+          sed "165s/\[OPENDATA_BUCKET_NAME\]/${OPENDATA_BUCKET_NAME}/" shared/index.html > asf-event-data/index.html
 
       - uses: aws-actions/configure-aws-credentials@v4
         with:
@@ -41,5 +41,5 @@ jobs:
 
       - name: Copy README and Index to S3
         run: |
-          aws s3 cp ./events/README.html s3://asf-event-data/README.html
-          aws s3 cp ./events/index.html s3://asf-event-data/index.html
+          aws s3 cp ./asf-event-data/README.html s3://asf-event-data/README.html
+          aws s3 cp ./asf-event-data/index.html s3://asf-event-data/index.html

@@ -4,7 +4,7 @@ This is a repository to keep a record of and track how we provide and manage dat
 
 ## Datasets
 
-### [Disaster Events](events)
+### [Disaster Events](asf-event-data)
 
 synthetic Aperture Radar (SAR) data is a powerful tool for monitoring and assessing disaster events and can provide valuable insights for researchers, scientists, and emergency response teams. The Alaska Satellite Facility (ASF) curates this collection of (primarily) SAR and SAR-derived satellite data products from a variety of data sources for disaster events.
 
@@ -13,5 +13,5 @@ This dataset is hosted in the `s3://asf-event-data` bucket on AWS. For more info
 #### Management
 
 On a merge to main, [deploy-events-readme.yml](.github/workflows/deploy-events-readme.yml) will upload to the `s3://asf-event-data` bucket:
-* `events/README.html`, which is automatically created from [`events/README.md`](events/README.md)
-* `events/index.html`, which is automatically created from [`shared/index.html`](shared/index.html)
+* `asf-event-data/README.html`, which is automatically created from [`asf-event-data/README.md`](asf-event-data/README.md)
+* `asf-event-data/index.html`, which is automatically created from [`shared/index.html`](shared/index.html)
