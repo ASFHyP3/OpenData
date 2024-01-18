@@ -12,7 +12,7 @@ jobs:
     runs-on: ubuntu-latest
     environment:
       name: asf-event-data
-      url:  https://asf-event-data.s3.us-west-2.amazonaws.com/README.md
+      url:  https://asf-event-data.s3.us-west-2.amazonaws.com/README.html
 
     steps:
       - uses: actions/checkout@v4
@@ -20,7 +20,7 @@ jobs:
       # To test, run:
       #     docker run -it --rm -v ${PWD}:/github/workspace \
       #     -e INPUT_INPUT_PATH=asf-event-data/README.md \
-      #     -e INPUT_OUTPUT_DIR=asf-event-data \
+      #     -e INPUT_OUTPUT_DIR=asf-event-data/ \
       #     -e INPUT_BUILD_PDF=false \
       #     ghcr.io/baileyjm02/markdown-to-pdf/markdown-to-pdf:latest
       - name: Create asf-event-data/README.html
@@ -32,7 +32,7 @@ jobs:
 
       - name: Create asf-event-data/index.html
         run: |
-          sed "165s/\[OPENDATA_BUCKET_NAME\]/${OPENDATA_BUCKET_NAME}/" shared/index.html > asf-event-data/index.html
+          sed "165s/\[OPENDATA_BUCKET_NAME\]/asf-event-data/" shared/index.html > asf-event-data/index.html
 
       - uses: aws-actions/configure-aws-credentials@v4
         with:
