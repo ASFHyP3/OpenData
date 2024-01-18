@@ -3,7 +3,7 @@ on:
     branches:
       - main
     paths:
-      - glo-30-hand/README.md
+      - glo-30-hand/readme.md
       - shared/index.html
 
 jobs:
@@ -18,14 +18,14 @@ jobs:
 
       # To test, run:
       #     docker run -it --rm -v ${PWD}:/github/workspace \
-      #     -e INPUT_INPUT_PATH=glo-30-hand/README.md \
+      #     -e INPUT_INPUT_PATH=glo-30-hand/readme.md \
       #     -e INPUT_OUTPUT_DIR=glo-30-hand/ \
       #     -e INPUT_BUILD_PDF=false \
       #     ghcr.io/baileyjm02/markdown-to-pdf/markdown-to-pdf:latest
-      - name: Create glo-30-hand/README.html
+      - name: Create glo-30-hand/readme.html
         uses: baileyjm02/markdown-to-pdf@v1
         with:
-          input_path: glo-30-hand/README.md
+          input_path: glo-30-hand/readme.md
           output_dir: glo-30-hand/
           build_pdf: false
 
@@ -41,5 +41,5 @@ jobs:
 
       - name: Copy README and Index to S3
         run: |
-          aws s3 cp ./glo-30-hand/README.html s3://glo-30-hand/README.html
+          aws s3 cp ./glo-30-hand/readme.html s3://glo-30-hand/readme.html
           aws s3 cp ./glo-30-hand/index.html s3://glo-30-hand/index.html
