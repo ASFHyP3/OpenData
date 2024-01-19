@@ -1,0 +1,18 @@
+name: asf-opendata
+channels:
+  - conda-forge
+  - nodefaults
+dependencies:
+  - python
+  - pip
+  # For Hand STAC notebooks
+  - pystac-client
+  - jupyter
+  # To generate HAND data
+  - asf_tools>=0.6
+  - numpy
+  - rasterio
+  - shapely
+  - pip:
+    # To generate HAND data
+    - hydrosar>=1.0
