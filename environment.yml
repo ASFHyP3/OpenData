@@ -9,7 +9,10 @@ dependencies:
   - pystac-client
   - jupyter
   # To generate HAND data
-  - hydrosar>=1.0
+  - asf_tools>=0.6
   - numpy
   - rasterio
   - shapely
+  - pip:
+    # To generate HAND data
+    - hydrosar>=1.0

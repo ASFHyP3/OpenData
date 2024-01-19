@@ -1,8 +1,9 @@
 open-data-registry/
-asf-event-data/README.html
-asf-event-data/index.html
-glo-30-hand/readme.html
-glo-30-hand/index.html
+asf-event-data/*.html
+glo-30-hand/*.html
+glo-30-hand/*.vrt
+glo-30-hand/*.tif
+
 
 # Created by https://www.toptal.com/developers/gitignore/api/python,vim,jetbrains,jupyternotebook
 # Edit at https://www.toptal.com/developers/gitignore?templates=python,vim,jetbrains,jupyternotebook
