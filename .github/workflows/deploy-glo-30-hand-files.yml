@@ -11,7 +11,7 @@ jobs:
     runs-on: ubuntu-latest
     environment:
       name: glo-30-hand
-      url: https://glo-30-hand.s3.us-west-2.amazonaws.com/README.html
+      url: https://glo-30-hand.s3.us-west-2.amazonaws.com/readme.html
 
     steps:
       - uses: actions/checkout@v4
