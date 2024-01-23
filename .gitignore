@@ -3,7 +3,7 @@ asf-event-data/*.html
 glo-30-hand/*.html
 glo-30-hand/*.vrt
 glo-30-hand/*.tif
-
+its-live-data/*.html
 
 # Created by https://www.toptal.com/developers/gitignore/api/python,vim,jetbrains,jupyternotebook
 # Edit at https://www.toptal.com/developers/gitignore?templates=python,vim,jetbrains,jupyternotebook

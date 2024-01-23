@@ -3,35 +3,35 @@ on:
     branches:
       - main
     paths:
-      - asf-event-data/README.md
+      - its-live-data/README.md
       - shared/index.html
 
 jobs:
-  deploy-asf-event-data-files:
+  deploy-its-live-data-files:
     runs-on: ubuntu-latest
     environment:
-      name: asf-event-data
-      url:  https://asf-event-data.s3.us-west-2.amazonaws.com/README.html
+      name: its-live-data
+      url:  https://its-live-data.s3.us-west-2.amazonaws.com/README.html
 
     steps:
       - uses: actions/checkout@v4
 
       # To test, run:
       #     docker run -it --rm -v ${PWD}:/github/workspace \
-      #     -e INPUT_INPUT_PATH=asf-event-data/README.md \
-      #     -e INPUT_OUTPUT_DIR=asf-event-data/ \
+      #     -e INPUT_INPUT_PATH=its-live-data/README.md \
+      #     -e INPUT_OUTPUT_DIR=its-live-data/ \
       #     -e INPUT_BUILD_PDF=false \
       #     ghcr.io/baileyjm02/markdown-to-pdf/markdown-to-pdf:latest
-      - name: Create asf-event-data/README.html
+      - name: Create its-live-data/README.html
         uses: baileyjm02/markdown-to-pdf@v1
         with:
-          input_path: asf-event-data/README.md
-          output_dir: asf-event-data/
+          input_path: its-live-data/README.md
+          output_dir: its-live-data/
           build_pdf: false
 
-      - name: Create asf-event-data/index.html
+      - name: Create its-live-data/index.html
         run: |
-          sed "165s/\[OPENDATA_BUCKET_NAME\]/asf-event-data/" shared/index.html > asf-event-data/index.html
+          sed "165s/\[OPENDATA_BUCKET_NAME\]/its-live-data/" shared/index.html > its-live-data/index.html
 
       - uses: aws-actions/configure-aws-credentials@v4
         with:
@@ -41,5 +41,5 @@ jobs:
 
       - name: Copy README and Index to S3
         run: |
-          aws s3 cp ./asf-event-data/README.html s3://asf-event-data/README.html
-          aws s3 cp ./asf-event-data/index.html s3://asf-event-data/index.html
+          aws s3 cp ./its-live-data/README.html s3://its-live-data/README.html
+          aws s3 cp ./its-live-data/index.html s3://its-live-data/index.html
