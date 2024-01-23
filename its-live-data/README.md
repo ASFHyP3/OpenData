@@ -5,21 +5,14 @@ The Inter-mission Time Series of Land Ice Velocity and Elevation (ITS-LIVE) proj
 ITS-LIVE data consists of:
 * NetCDF Level-2 scenes-pair ice flow products posted to a standard 120 m grid derived from Landsat 4/5/7/8/9 and Sentinel-2 optical scenes, and Sentinel-1 SAR scenes.
 * A set of Zarr datacubes containing all scene pair data cloud-optimized for time-series analysis, with a suite of user tools available to effectively query the data.
-* A suite of Level 3 products, including: quarterly and annual ice-sheet and regional velocity mosaics as Cloud-Optimized GeoTIFFs
+* A suite of Level 3 products, including:
+  * regional and ice-sheet wide mosaics calculated monthly and annually as Cloud-Optimized GeoTIFFs
 
+For more information about the ITS-LIVE project, please see <https://its-live.jpl.nasa.gov/>.
 
 ## Accessing the ITS-LIVE data
 
-The ITS-LIVE data is all stored is the public `its-live-data` AWS S3 bucket, which is located in the `us-west-2` (Oregon) AWS Region. 
-
-```shell
-aws s3 ls s3://its-live-data/
-```
-
-> [CAUTION!]
-> There are over 1 billion objects in the `its-live-data` bucket. Recursively listing the whole bucket is **not** recommended.
-
-The data is organized under a collection of prefixes (folders) to ease access:
+The ITS-LIVE data is all stored is the public `its-live-data` AWS S3 bucket, which is located in the `us-west-2` (Oregon) AWS Region, and organized under a collection of prefixes (folders) to ease access:
 
 * `autorift_parameters/`: A collection of [autoRIFT](https://github.com/nasa-jpl/autoRIFT/) input parameter files used by the ITS_LIVE project to product the netCDF velocity image pairs
 * `catalog_geojson/`: GeoJSON catalog of the NetCDF velocity image pairs
@@ -30,6 +23,20 @@ The data is organized under a collection of prefixes (folders) to ease access:
 * `vel_web_tiles/`: [Tiled web map](https://en.wikipedia.org/wiki/Tiled_web_map) PNG images derived from the NetCDF mosaics for easy-use in web applications
 * `velocity_image_pair/`: NetCDF velocity images derived from optical and SAR satellite image pairs using [autoRIFT](https://github.com/nasa-jpl/autoRIFT/)
 
+To list all the top-level bucket prefixes, run:
+
+```shell
+aws s3 ls s3://its-live-data/
+```
+
+> [CAUTION!]
+> There are over 1 billion objects in the `its-live-data` bucket. Recursively listing the whole bucket is **not** recommended.
+
+## Contact
+
+If you have questions about the data itself or the processing methods used, please post in the [ITS_LIVE Community gitter](https://app.gitter.im/#/room/#its_live_community:gitter.im).
+
+If you have question about how the data is managed on AWS, please email the [ASF Tools Team](mailto:uaf-asf-apd@alaska.edu).
 
 ## License
 
