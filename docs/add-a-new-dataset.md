@@ -31,11 +31,11 @@ aws cloudformation deploy --profile ${AWS_PROFILE} \
     --parameter-overrides OpenDataBucketName=${OPENDATA_BUCKET}
 ```
 >[!IMPORTANT]
-> Note: This stack should only be deployed once per AWS account.
+> Note: This stack should only be deployed once per AWS account. It is also a good idea to enable termination protection.
 
 After the stack is created you'll need to create an AWS CLI access key for the `github-actions` user, which you will use in the next step.
 
-### GitGub Actions Environment
+### GitHub Actions Environment
 
 We use a GitHub Actions Environment for each datasett to store the AWS access credentials necessary to deploy the common files.
 
@@ -49,6 +49,6 @@ and name it the same as the S3 bucket (`${OPENDATA_BUCKET}`). When configuring t
    * `AWS_SECRET_ACCESS_KEY`
    * `AWS_REGION` (typically `us-west-2`)
 
-### Deploy action
+### Deployment action
 
-Now, using [deploy-asf-event-data-files.yml](../.github/workflows/deploy-asf-event-data-files.yml) as a template, create a deploy action for your dataset.
+Now, using [deploy-asf-event-data-files.yml](../.github/workflows/deploy-asf-event-data-files.yml) as a template, create a deployment action for your dataset.
