@@ -1,6 +1,6 @@
-# AWS Open Data managed by the Alaska Satellite Facility's Tools Team
+# ASF On AWS Open Data
 
-This is a repository to keep a record of and track how we provide and manage data on AWS OpenData.
+This is a repository to keep a record of and track how the Alaska Satellite Facility (ASF) Tools Team provides and manages data on AWS OpenData.
 
 Below is a list of datasets we currently maintain. For adding a new dataset, see: [add-a-new-dataset.md](docs/add-a-new-dataset.md).
 
@@ -32,7 +32,7 @@ On a merge to main, [deploy-glo-30-hand-files.yml](.github/workflows/deploy-glo3
 
 ### [ITS_LIVE](its-live-data)
 
-The Inter-mission Time Series of Land Ice Velocity and Elevation (ITS-LIVE) project has a singular mission: to accelerate ice sheet and glacier research by producing globally comprehensive, high resolution, low latency, temporally dense, multi-sensor records of land ice and ice shelf change, while minimizing barriers between the data and the user.
+The Inter-mission Time Series of Land Ice Velocity and Elevation (ITS_LIVE) project has a singular mission: to accelerate ice sheet and glacier research by producing globally comprehensive, high resolution, low latency, temporally dense, multi-sensor records of land ice and ice shelf change, while minimizing barriers between the data and the user.
 
 This dataset is hosted in the `s3://its-live-data` bucket on AWS. For more information, more information, see: [the listing on AWS OpenData](https://registry.opendata.aws/its-live-data/), which is manged by [this YAML](https://github.com/awslabs/open-data-registry/blob/main/datasets/its-live-data.yaml).
 
