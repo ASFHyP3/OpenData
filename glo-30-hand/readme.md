@@ -73,4 +73,4 @@ Copyright 2022 Alaska Satellite Facility (ASF). Produced using the Copernicus Wo
 
 ---
 
-[AWS Public Datasets](http://aws.amazon.com/public-datasets)
+[Registry of Open Data on AWS](https://registry.opendata.aws/)

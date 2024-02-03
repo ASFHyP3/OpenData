@@ -87,4 +87,4 @@ This section contains a list of all data products available for each disaster ev
 
 ---
 
-[AWS Public Datasets](http://aws.amazon.com/public-datasets)
+[Registry of Open Data on AWS](https://registry.opendata.aws/)
