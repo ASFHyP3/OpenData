@@ -1,0 +1,16 @@
+AWSTemplateFormatVersion: 2010-09-09
+
+Resources:
+  ItsLiveIamUsers:
+    Type: AWS::IAM::User
+    Properties:
+      UserName: betolink  # Luis Lopez; https://github.com/betolink
+      Policies:
+        - PolicyName: betolink-user-policy
+          PolicyDocument:
+            Version: 2012-10-17
+            Statement:
+              - Effect: Allow
+                Action: "s3:*"
+                Resource:
+                 - "arn:aws:s3:::s1-orbits/*"
