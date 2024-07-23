@@ -7,7 +7,7 @@ For more information on the orbit products, see the [Copernicus POD Specificatio
 ## Accessing the Sentinel-1 Orbit Data
 
 The Sentinel-1 Orbits dataset is located in the public `s1-orbits` AWS S3 bucket. The dataset is organized into two folders seperating the two orbit types:
-* `POEORB/`: The precise orbit ephemerides (POE) data. This data is the most precise orbit data and can take a couple days to be created.
+* `POEORB/`: The precise orbit ephemerides (POE) data. This is the most precise orbit data and can take a couple days to be created.
 * `RESORB/`: The restituded orbit data. This data is less precise and is uploaded the same day as an aquisition. 
 
 ## Contact
