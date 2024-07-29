@@ -1,16 +1,16 @@
 on:
-  push:
+  pull_request:
     branches:
     - main
     paths:
     - s1-orbits/README.md
     - shared/index.html
-  
+
 jobs:
   deploy-asf-event-data-files:
     runs-on: ubuntu-latest
     environment:
-      name: s1-orbits
+      name: s1-orbits-test
       url:  https://s1-orbits.s3.us-west-2.amazonaws.com/README.html
 
     steps:
@@ -41,5 +41,5 @@ jobs:
 
       - name: Copy README and Index to S3
         run: |
-            aws s3 cp ./s1-orbits/README.html s3://s1-orbits/README.html
-            aws s3 cp ./s1-orbits/index.html s3://s1-orbits/index.html
+            aws s3 cp ./s1-orbits/README.html s3://s1-orbits-test/README.html
+            aws s3 cp ./s1-orbits/index.html s3://s1-orbits-test/index.html
