@@ -7,7 +7,7 @@ on:
     - shared/index.html
 
 jobs:
-  deploy-asf-event-data-files:
+  deploy-s1-orbits-files-prod:
     runs-on: ubuntu-latest
     environment:
       name: s1-orbits
