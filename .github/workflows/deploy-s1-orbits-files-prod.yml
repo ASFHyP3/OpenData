@@ -11,7 +11,7 @@ jobs:
     runs-on: ubuntu-latest
     environment:
       name: s1-orbits
-      url:  https://s1-orbits.s3.us-west-2.amazonaws.com/README.html
+      url:  https://s1-orbits-test.s3.us-west-2.amazonaws.com/README.html
 
     steps:
       - uses: actions/checkout@v4
