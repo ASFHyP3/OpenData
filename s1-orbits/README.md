@@ -14,10 +14,6 @@ The Sentinel-1 Orbits dataset is located in the public `s1-orbits` AWS S3 bucket
 
 If you have questions about how the data is managed on AWS, please email the [ASF Tools Team](mailto:uaf-asf-apd@alaska.edu).
 
-## License
-
-The use of s1-orbits data falls under the terms and conditions of the [Creative Commons Zero (CC0) 1.0 Universal](https://creativecommons.org/publicdomain/zero/1.0/) license.
-
 ---
 
 [Registry of Open Data on AWS](https://registry.opendata.aws/)
