@@ -1,0 +1,45 @@
+on:
+  pull_request:
+    branches:
+    - main
+    paths:
+    - s1-orbits/README.md
+    - shared/index.html
+
+jobs:
+  deploy-s1-orbits-files-test:
+    runs-on: ubuntu-latest
+    environment:
+      name: s1-orbits-test
+      url:  https://s1-orbits.s3.us-west-2.amazonaws.com/README.html
+
+    steps:
+      - uses: actions/checkout@v4
+
+      # To test, run:
+      #     docker run -it --rm -v ${PWD}:/github/workspace \
+      #     -e INPUT_INPUT_PATH=s1-orbits/README.md \
+      #     -e INPUT_OUTPUT_DIR=s1-orbits/ \
+      #     -e INPUT_BUILD_PDF=false \
+      #     ghcr.io/baileyjm02/markdown-to-pdf/markdown-to-pdf:latest
+      - name: Create s1-orbits/README.html
+        uses: baileyjm02/markdown-to-pdf@v1
+        with:
+          input_path: s1-orbits/README.md
+          output_dir: s1-orbits/
+          build_pdf: false
+
+      - name: Create s1-orbits/index.html
+        run: |
+          sed "165s/\[OPENDATA_BUCKET_NAME\]/s1-orbits/" shared/index.html > s1-orbits/index.html
+
+      - uses: aws-actions/configure-aws-credentials@v4
+        with:
+            aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+            aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+            aws-region: ${{ secrets.AWS_REGION }}
+
+      - name: Copy README and Index to S3
+        run: |
+            aws s3 cp ./s1-orbits/README.html s3://s1-orbits-test/README.html
+            aws s3 cp ./s1-orbits/index.html s3://s1-orbits-test/index.html

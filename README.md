@@ -39,3 +39,15 @@ This dataset is hosted in the `s3://its-live-data` bucket on AWS. For more infor
 On a merge to main, [deploy-its-live-data-files.yml](.github/workflows/deploy-its-live-data-files.yml) will upload to the `s3://its-live-data` bucket:
 * `its-live-data/README.html`, which is automatically created from [`its-live-data/README.md`](its-live-data/README.md)
 * `its-live-data/index.html`, which is automatically created from [`shared/index.html`](shared/index.html)
+
+### [S1-Orbits](s1-orbits)
+
+The Sentinel-1 Orbits project aims to create a fast, reliable, and easy to access dataset containing POEORB and RESORB orbit metadata files for Sentinel-1. This dataset includes all POEORB files, and it also includes RESORB files from the last 90 days. The most recent orbit files are added to this dataset within 20 minutes of their publication to the [Copernicus Dataspace Ecosystem](https://documentation.dataspace.copernicus.eu/Data/SentinelMissions/Sentinel1.html). 
+
+This dataset is hosted in the `s3://s1-orbits` bucket on AWS. For more information, more information, see: [the listing on AWS OpenData](https://registry.opendata.aws/s1-orbits/), which is manged by [this YAML](https://github.com/awslabs/open-data-registry/blob/main/datasets/s1-orbits.yaml).
+
+#### Management
+
+On a PR to main, [deploy-s1-orbits-files-test.yml](.github/workflows/deploy-s1-orbits-files-test.yml) uploads to the `s3://s1-orbits-test` bucket, and on a merge to main, deploy-s1-orbits-files-prod.yml](.github/workflows/deploy-s1-orbits-files-prod.yml) uploads to the `s3://s1-orbits` bucket:
+* `s1-orbits/README.html`, which is automatically created from [`s1-orbits/README.md`](s1-orbits/README.md)
+* `s1-orbits/index.html`, which is automatically created from [`shared/index.html`](shared/index.html) 
