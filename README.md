@@ -48,6 +48,6 @@ This dataset is hosted in the `s3://s1-orbits` bucket on AWS. For more informati
 
 #### Management
 
-On a PR to main, and a merge to main, [deploy-s1-orbits-files-test.yml](.github/workflows/deploy-s1-orbits-files-test.yml) and [deploy-s1-orbits-files-prod.yml](.github/workflows/deploy-s1-orbits-files-prod.yml), will upload to the `s3://s1-orbits` and `s3://s1-orbits-test` buckets, respectivelly: 
+On a PR to main, [deploy-s1-orbits-files-test.yml](.github/workflows/deploy-s1-orbits-files-test.yml) uploads to the `s3://s1-orbits-test` bucket, and on a merge to main, deploy-s1-orbits-files-prod.yml](.github/workflows/deploy-s1-orbits-files-prod.yml) uploads to the `s3://s1-orbits` bucket:
 * `s1-orbits/README.html`, which is automatically created from [`s1-orbits/README.md`](s1-orbits/README.md)
 * `s1-orbits/index.html`, which is automatically created from [`shared/index.html`](shared/index.html) 
