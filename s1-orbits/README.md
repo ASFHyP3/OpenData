@@ -73,17 +73,10 @@ For those working outside of Python, https://s1-orbits.asf.alaska.edu/ui provide
 
 The SNS topic `arn:aws:sns:us-west-2:211125554030:s1-orbits-object_created` provides push notifications when new files are added to the `s1-orbits` S3 bucket. The topic supports SQS and Lambda subscriptions.
 
-You can subscribe to this topic using the [sns subscribe](https://docs.aws.amazon.com/cli/latest/reference/sns/subscribe.html) method of the [AWS CLI](https://aws.amazon.com/cli/):
+- To subscribe a Lambda Function, see [Invoking Lambda functions with Amazon SNS notifications](https://docs.aws.amazon.com/lambda/latest/dg/with-sns.html).
+- To subscribe an SQS Queue, see [Subscribing a queue to an Amazon SNS topic using the Amazon SQS console](https://docs.aws.amazon.com/AWSSimpleQueueService/latest/SQSDeveloperGuide/sqs-configure-subscribe-queue-sns-topic.html).
 
-```commandline
-# lambda subscription
-aws sns subscribe --topic-arn arn:aws:sns:us-west-2:211125554030:s1-orbits-object_created --protocol lambda --notification-endpoint <function_arn>
-
-# sqs subscription
-aws sns subscribe --topic-arn arn:aws:sns:us-west-2:211125554030:s1-orbits-object_created --protocol sqs --notification-endpoint <queue_arn>
-```
-
-SNS messages conform to the S3 [Event message structure](https://docs.aws.amazon.com/AmazonS3/latest/userguide/notification-content-structure.html).
+SNS messages conform to the S3 [event message structure](https://docs.aws.amazon.com/AmazonS3/latest/userguide/notification-content-structure.html).
 
 ## License
 
