@@ -1,6 +1,6 @@
 # Sentinel-1 Precise Orbit Determination (POD) Products
 
-Sentinel-1 Precise Orbit Determination (POD) products contain auxiliary data on satellite position and velocity for the European Space Agency's (ESA) Sentinel-1 satellite constellation. Sentinel-1 is a C-band Synthetic Aperture Radar (SAR) satellite constellation first launched in 2014 as part of the European Union's Copernicus Earth Observation programme. POD products are a necessary auxiliary input for nearly all Sentinel-1 data processing workflows.
+Sentinel-1 Precise Orbit Determination (POD) products contain auxiliary data on satellite position and velocity for the European Space Agency's (ESA) Sentinel-1 mission. Sentinel-1 is a C-band Synthetic Aperture Radar (SAR) satellite constellation first launched in 2014 as part of the European Union's Copernicus Earth Observation programme. POD products are a necessary auxiliary input for nearly all Sentinel-1 data processing workflows.
 
 This dataset is a mirror of the [Sentinel-1 Orbits](https://documentation.dataspace.copernicus.eu/Data/ComplementaryData/Additional.html#sentinel-1-orbits) dataset hosted in the Copernicus Data Space Ecosystem (CDSE). New files are added within 20 minutes of their publication to CDSE. This dataset includes two types of POD files: RESORB and POEORB.
 
@@ -49,7 +49,7 @@ For example, `S1A_OPER_AUX_POEORB_OPOD_20230821T080724_V20230731T225942_20230802
 
 ### AWS S3 Explorer
 
-Browse the contents of the `s1-orbits` bucket in a browser by vising https://s1-orbits.s3.amazonaws.com/index.html
+Browse the contents of the `s1-orbits` bucket in a browser by vising [https://s1-orbits.s3.amazonaws.com/index.html](https://s1-orbits.s3.amazonaws.com/index.html)
 
 ### Python Library
 
@@ -67,7 +67,7 @@ PosixPath('S1A_OPER_AUX_POEORB_OPOD_20230816T080815_V20230726T225942_20230728T00
 
 For those working outside of Python, https://s1-orbits.asf.alaska.edu/ui provides a REST API for downloading the best available orbit for a given Sentinel-1 scene.
 
-`https://s1-orbits.asf.alaska.edu/scene/S1A_IW_SLC__1SDV_20230727T075102_20230727T075131_049606_05F70A_AE0A`
+[https://s1-orbits.asf.alaska.edu/scene/S1A_IW_SLC__1SDV_20230727T075102_20230727T075131_049606_05F70A_AE0A](https://s1-orbits.asf.alaska.edu/scene/S1A_IW_SLC__1SDV_20230727T075102_20230727T075131_049606_05F70A_AE0A)
 
 ### SNS Subscriptions
 
