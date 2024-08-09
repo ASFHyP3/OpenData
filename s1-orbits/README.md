@@ -71,7 +71,7 @@ For those working outside of Python, https://s1-orbits.asf.alaska.edu/ui provide
 
 ### SNS Subscriptions
 
-The SNS topic `arn:aws:sns:us-west-2:211125554030:s1-orbits-object_created` provides push notifications when new file are added to the `s1-orbits` S3 bucket. The topic supports SQS and Lambda subscriptions.
+The SNS topic `arn:aws:sns:us-west-2:211125554030:s1-orbits-object_created` provides push notifications when new files are added to the `s1-orbits` S3 bucket. The topic supports SQS and Lambda subscriptions.
 
 You can subscribe to this topic using the [sns subscribe](https://docs.aws.amazon.com/cli/latest/reference/sns/subscribe.html) method of the [AWS CLI](https://aws.amazon.com/cli/):
 
