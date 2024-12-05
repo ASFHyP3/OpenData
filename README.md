@@ -40,6 +40,22 @@ On a merge to main, [deploy-its-live-data-files.yml](.github/workflows/deploy-it
 * `its-live-data/README.html`, which is automatically created from [`its-live-data/README.md`](its-live-data/README.md)
 * `its-live-data/index.html`, which is automatically created from [`shared/index.html`](shared/index.html)
 
+### [PISM-Cloud](asf-event-data)
+
+> [CAUTION!]
+> This dataset is being developed in preparation of ISMIP7 and not yet listed on AWS OpenData.
+
+The Parallel Ice Sheet Model (PISM) was the first open-source and openly-developed ice sheet model, and has enabled innovative glaciological research, generating over 180 peer-reviewed publications from around 30 institutions in over a dozen countries as of 2023. 
+
+The PISM-Cloud dataset is hosted in the `s3://pism-cloud-data` bucket on AWS. For more information, see: TBD
+
+#### Management
+
+On a merge to main, [deploy-pism-cloud-data-files.yml](.github/workflows/deploy-pism-cloud-data-files.yml) will upload to the `s3://pism-cloud-data` bucket:
+* `pism-cloud-data/README.html`, which is automatically created from [`pism-cloud-data/README.md`](asf-event-data/README.md)
+* `pism-cloud-data/index.html`, which is automatically created from [`shared/index.html`](shared/index.html)
+
+
 ### [S1-Orbits](s1-orbits)
 
 The Sentinel-1 Orbits project aims to create a fast, reliable, and easy to access dataset containing POEORB and RESORB orbit metadata files for Sentinel-1. This dataset includes all POEORB files, and it also includes RESORB files from the last 90 days. The most recent orbit files are added to this dataset within 20 minutes of their publication to the [Copernicus Dataspace Ecosystem](https://documentation.dataspace.copernicus.eu/Data/SentinelMissions/Sentinel1.html). 

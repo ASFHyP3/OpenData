@@ -1,0 +1,45 @@
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - pism-cloud-data/README.md
+      - shared/index.html
+
+jobs:
+  deploy-pism-cloud-data-files:
+    runs-on: ubuntu-latest
+    environment:
+      name: pism-cloud-data
+      url:  https://pism-cloud-data.s3.us-west-2.amazonaws.com/README.html
+
+    steps:
+      - uses: actions/checkout@v4
+
+      # To test, run:
+      #     docker run -it --rm -v ${PWD}:/github/workspace \
+      #     -e INPUT_INPUT_PATH=pism-cloud-data/README.md \
+      #     -e INPUT_OUTPUT_DIR=pism-cloud-data/ \
+      #     -e INPUT_BUILD_PDF=false \
+      #     ghcr.io/baileyjm02/markdown-to-pdf/markdown-to-pdf:latest
+      - name: Create pism-cloud-data/README.html
+        uses: baileyjm02/markdown-to-pdf@v1
+        with:
+          input_path: pism-cloud-data/README.md
+          output_dir: pism-cloud-data/
+          build_pdf: false
+
+      - name: Create pism-cloud-data/index.html
+        run: |
+          sed "165s/\[OPENDATA_BUCKET_NAME\]/pism-cloud-data/" shared/index.html > pism-cloud-data/index.html
+
+      - uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ secrets.AWS_REGION }}
+
+      - name: Copy README and Index to S3
+        run: |
+          aws s3 cp ./pism-cloud-data/README.html s3://pism-cloud-data/README.html
+          aws s3 cp ./pism-cloud-data/index.html s3://pism-cloud-data/index.html

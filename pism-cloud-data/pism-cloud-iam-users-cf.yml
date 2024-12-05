@@ -1,0 +1,20 @@
+# aws cloudformation deploy --profile opendata-its-live \                                                                      SIG(126) ↵  15:53:59
+#    --stack-name its-live-iam-users \
+#    --template-file its-live-data/its-live-iam-users-cf.yml \
+#    --capabilities CAPABILITY_NAMED_IAM
+AWSTemplateFormatVersion: 2010-09-09
+
+Resources:
+  ItsLiveIamUsers:
+    Type: AWS::IAM::User
+    Properties:
+      UserName: betolink  # Luis Lopez; https://github.com/betolink
+      Policies:
+        - PolicyName: betolink-user-policy
+          PolicyDocument:
+            Version: 2012-10-17
+            Statement:
+              - Effect: Allow
+                Action: "s3:*"
+                Resource:
+                 - "arn:aws:s3:::its-live-data/cloud-experiments/*"
