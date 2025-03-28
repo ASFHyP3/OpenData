@@ -37,7 +37,7 @@ s1-orbits/
 ### File Naming Convention
 
 The file name convention for these products is `sss_OPER_AUX_tttttt_OPOD_creation_Vstart_stop.EOF`, where:
-- `sss` is the satellite platform (`S1A` or `S1B`)
+- `sss` is the satellite platform (`S1A`, `S1B`, or `S1C`)
 - `tttttt` is the orbit type (`POEORB` or `RESORB`)
 - `creation` is the creation date of the file, in CCSDS compact format (`YYYYMMDDTHHMMSS`)
 - `start` is the validity start time of the data contained in the file, in CCSDS compact format (`YYYYMMDDTHHMMSS`)
