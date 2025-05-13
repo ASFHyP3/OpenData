@@ -1,6 +1,6 @@
 # ASF On AWS Open Data
 
-This is a repository to keep a record of and track how the Alaska Satellite Facility (ASF) Tools Team 
+This is a repository to keep a record of and track how the Alaska Satellite Facility (ASF) 
 provides and manages data on AWS OpenData.
 
 Below is a list of datasets we currently maintain. For adding a new dataset, see: 
