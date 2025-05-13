@@ -6,7 +6,7 @@ Parameters:
     Type: String
 
 Resources:
-  GithubActionsUser:
+  User:
     Type: AWS::IAM::User
     Properties:
       UserName: data-publisher
