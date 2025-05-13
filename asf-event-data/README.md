@@ -39,19 +39,23 @@ program. These RTC products cover the east and west coasts of the United States 
 and can be accessed through image services hosted by ASF. This allows the data to be available immediately to 
 disaster response personnel as soon as possible without any additional processing. 
 
+New Sentinel-1 acquisitions are processed to RTC and transferred to this bucket every three hours. 
+
 The image services referencing the RTC_services datasets can be explored in [this web map](https://asf-daac.maps.arcgis.com/home/webmap/viewer.html?webmap=3dd8d25559db4ba6aa0e1b6e8cb5d39a).
 
 ### HKHwatermaps
 
 The HKHwatermaps prefix includes RTC products over the Hindu-Kush-Himalaya region, along with water extent 
 maps derived from the RTC products. They are generated in support of [ICIMOD](https://www.icimod.org/), which 
-maintains image services for flood monitoring. 
+maintains image services for flood monitoring.
+
+New Sentinel-1 acquisitions are processed to RTC and transferred to this bucket every three hours. 
 
 ## Disaster Event Prefixes
 
 Some of the prefixes in this bucket reference a particular event. These prefixes help users quickly identify 
 and navigate to the data corresponding to a particular event. The prefixes are a combination of the month/year 
-of the disaster event, and the major country affected by the event.
+of the disaster event, and the location affected by the event.
 
 For example, the `jan2024_japan` prefix contains data products relevant for the earthquake in Japan on 
 January 1st, 2024.
@@ -63,9 +67,11 @@ Users can find the data for a specific disaster event by exploring the correspon
 The AWS Open Data Bucket contains a variety of SAR data products, including but not limited to:
 
 - **Radiometrically Terrain Corrected (RTC) Data:** Providing near real-time SAR observations for rapid analysis.
-    - See [this page](https://hyp3-docs.asf.alaska.edu/guides/rtc_product_guide/) for a detailed overview of this dataset type.
+    - See [ASF's RTC On Demand Product Guide](https://hyp3-docs.asf.alaska.edu/guides/rtc_product_guide/) 
+      a detailed overview of this dataset type.
 - **Interferometric Synthetic Aperture Radar (InSAR) Data:** Offering insights into ground deformation and displacement.
-    - See [this page](https://hyp3-docs.asf.alaska.edu/guides/insar_product_guide/) for a detailed overview of this dataset type.
+    - See [ASF's InSAR On Demand Product Guide](https://hyp3-docs.asf.alaska.edu/guides/insar_product_guide/) 
+      for a detailed overview of this dataset type.
 - **Change Detection Maps:** Highlighting significant changes between SAR acquisitions.
 
 Each disaster event folder includes relevant data products in multiple formats to accommodate different analysis needs.
