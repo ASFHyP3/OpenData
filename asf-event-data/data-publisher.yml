@@ -1,0 +1,23 @@
+AWSTemplateFormatVersion: 2010-09-09
+
+Parameters:
+  OpenDataBucketName:
+    Description: AWS S3 bucket name
+    Type: String
+
+Resources:
+  User:
+    Type: AWS::IAM::User
+    Properties:
+      UserName: data-publisher
+      Policies:
+        - PolicyName: data-publisher-policy
+          PolicyDocument:
+            Version: 2012-10-17
+            Statement:
+              - Effect: Allow
+                Action: s3:ListBucket
+                Resource: !Sub "arn:aws:s3:::${OpenDataBucketName}"
+              - Effect: Allow
+                Action: s3:PutObject
+                Resource: !Sub "arn:aws:s3:::${OpenDataBucketName}/*"
