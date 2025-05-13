@@ -30,7 +30,6 @@ they are added to the bucket. These prefixes include:
 
 - RTC_services
 - HKHwatermaps
-<-- - event_monitoring -->
 
 ### RTC Services
 
