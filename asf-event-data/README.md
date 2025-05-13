@@ -9,11 +9,12 @@ supporting general disaster response services.
 
 ## Table of Contents
 1. [Introduction](#introduction)
-2. [Disaster Event Prefixes](#disaster-event-prefixes)
-3. [Data Products](#data-products)
-4. [Accessing the Data](#accessing-the-data)
-5. [License](#license)
-6. [Manifest](#manifest)
+2. [Disaster Support Services](#disaster-support-services)
+3. [Disaster Event Prefixes](#disaster-event-prefixes)
+4. [Data Products](#data-products)
+5. [Accessing the Data](#accessing-the-data)
+6. [License](#license)
+7. [Manifest](#manifest)
 
 ## Introduction
 
