@@ -23,13 +23,13 @@ to the public through this AWS Open Data Bucket. The data covers a range of disa
 
 ## Disaster Support Services
 
-The contents of some of the prefixes have been generated to support ongoing monitoring services. The data can 
+Some of the prefixes include content generated in support of ongoing monitoring services. The data can 
 be accessed through interactive web applications, which automatically provide access to new data products as 
 they are added to the bucket. These prefixes include: 
 
 - RTC_services
 - HKHwatermaps
-- event_monitoring
+<-- - event_monitoring -->
 
 ### RTC Services
 
