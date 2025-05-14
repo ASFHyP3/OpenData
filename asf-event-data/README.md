@@ -65,7 +65,7 @@ products, as areas with very dry or frozen soils may be classified as surface wa
 
 The products, which are hosted in the following prefixes, can be accessed through interactive web applications, 
 which are regularly updated to include new acquisitions:
-- RTC_services
+- image-services/RTC_services
 - HKHwatermaps
 
 ### RTC Services
@@ -134,9 +134,7 @@ aws s3 cp s3://asf-event-data/jan2024_japan/S1A_IW_20231218T205948_DVP_RTC10_G_g
 
 ## License
 
-<--[TODO: Change to our usual license]-->
-
-The data in this AWS Open Data Bucket is provided freely and openly under the XX policy. You may use this data for any purpose you would like.
+The data in this AWS Open Data Bucket is provided freely and openly under the [Creative Commons Zero (CC0) 1.0 Universal License](https://creativecommons.org/publicdomain/zero/1.0/). You may use this data for any purpose you would like.
 
 Thank you for using the AWS Open Data Bucket for ASF SAR Data Products! If you have any questions or feedback, feel free to reach out to us.
 
