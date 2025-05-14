@@ -90,8 +90,8 @@ ground may be frozen or saturated.
 ### HKHwatermaps
 
 The HKHwatermaps prefix includes products generated over the Hindu-Kush-Himalaya region in support of 
-[ICIMOD](https://www.icimod.org/), 
-which maintains image services and web applications for flood monitoring.
+[ICIMOD](https://www.icimod.org/), which maintains image services and a 
+[web application](https://geoapps.icimod.org/FloodInundation/) for flood monitoring.
 
 New Sentinel-1 acquisitions are processed to RTC and transferred to this prefix every three hours. 
 
