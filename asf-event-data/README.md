@@ -28,7 +28,7 @@ Some of the prefixes include content generated in support of ongoing monitoring 
 be accessed through interactive web applications, which automatically provide access to new data products as 
 they are added to the bucket. These prefixes include: 
 
-- RTC_services
+- image-services/RTC_services
 - HKHwatermaps
 
 ### RTC Services
