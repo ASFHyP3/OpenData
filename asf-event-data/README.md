@@ -63,14 +63,14 @@ Note that the WM (surface water extent) products have only been
 While they are available for other areas, they may not perform well in all cases. Use caution when referencing these 
 products, as areas with very dry or frozen soils may be classified as surface water. 
 
-The products, which are hosted in the following prefixes, can be accessed through interactive web applications, 
-which are regularly updated to include new acquisitions:
+These products can be explored and accessed through interactive web applications, which are regularly updated to 
+include new acquisitions. They are hosted in the following prefixes:
 - image-services/RTC_services
 - HKHwatermaps
 
 ### RTC Services
 
-The files in the RTC_services prefix are generated to support the 
+The files in the image-services/RTC_services prefix are generated to support the 
 [NASA Earth Science Applied Science Disasters](https://appliedsciences.nasa.gov/what-we-do/disasters) 
 program. These products cover the east and west coasts of the United States and the entire state of Alaska. 
 
