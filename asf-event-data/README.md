@@ -59,7 +59,7 @@ The products include the following:
   combining both VV and VH returns
 
 Note that the WM (surface water extent) products have only been 
-[validated in the Hindu Kush Himalaya region](https://www.mdpi.com/2072-4292/16/17/3244). 
+[validated in the Hindu Kush Himalayan region](https://www.mdpi.com/2072-4292/16/17/3244). 
 While they are available for other areas, they may not perform well in all cases. Use caution when referencing these 
 products, as areas with very dry or frozen soils may be classified as surface water. 
 
@@ -89,7 +89,7 @@ ground may be frozen or saturated.
 
 ### HKHwatermaps
 
-The HKHwatermaps prefix includes products generated over the Hindu-Kush-Himalaya region in support of 
+The HKHwatermaps prefix includes products generated over the Hindu Kush Himalayan (HKH) region in support of 
 [ICIMOD](https://www.icimod.org/), which maintains image services and a 
 [web application](https://geoapps.icimod.org/FloodInundation/) for flood monitoring.
 
