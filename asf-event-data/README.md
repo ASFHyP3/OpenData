@@ -29,7 +29,7 @@ The AWS Open Data Bucket contains a variety of SAR data products, including but 
 
 - **Radiometrically Terrain Corrected (RTC) Data:** Providing near real-time SAR observations for rapid analysis.
     - See [ASF's RTC On Demand Product Guide](https://hyp3-docs.asf.alaska.edu/guides/rtc_product_guide/) 
-      a detailed overview of this dataset type.
+      for a detailed overview of this dataset type.
 
 - **Interferometric Synthetic Aperture Radar (InSAR) Data:** Offering insights into ground deformation and displacement.
     - See [ASF's InSAR On Demand Product Guide](https://hyp3-docs.asf.alaska.edu/guides/insar_product_guide/) 
