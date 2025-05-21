@@ -13,7 +13,7 @@ Parameters:
     MinLength: '1'
     Type: String
 
-  OverviewAccountId:
+  OverviewAccountIds:
     Description: AWS account ID(s) that need permission to publish files to image-service-overviews/
     Type: CommaDelimitedList
 
@@ -108,9 +108,10 @@ Resources:
           - !Sub arn:aws:s3:::${DataSetBucket}/*
           - !Sub arn:aws:s3:::${DataSetBucket}
         - Action: s3:PutObject
+          Effect: Allow
           Principal:
-            AWS: !Ref AccountId
-          Resource: arn:aws:s3:::${DataSetBucket}/image-service-overviews/*
+            AWS: !Ref OverviewAccountIds
+          Resource: !Sub arn:aws:s3:::${DataSetBucket}/image-service-overviews/*
     Type: AWS::S3::BucketPolicy
 
 Outputs:
