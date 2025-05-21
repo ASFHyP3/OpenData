@@ -82,6 +82,8 @@ They can be explored interactively in
 New Sentinel-1 acquisitions are processed to RTC and transferred to this prefix every three hours, and image 
 services are updated daily.
 
+Mosaic-level overviews in Cloud Raster Format (CRF) are generated for these services and hosted in the `image-service-overviews` prefix.
+
 WM products are also available, and can be explored in 
 [this web map](https://asf-daac.maps.arcgis.com/apps/mapviewer/index.html?webmap=faa83e4ccfe64bb8a99c13ef70b19b8f), 
 but use caution when interpreting the images, especially in arid regions and shoulder seasons where 
