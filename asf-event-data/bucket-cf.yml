@@ -1,5 +1,5 @@
 # customized version of the docs/pds-bucket-cf.yml template for creating the asf-event-data bucket
-# includes a bucket policy allowing s3:PutObject permissions to `s3://asf-event-data/image-service-overviews/` from the given AWS account
+# includes a bucket policy allowing s3:PutObject permissions to `s3://asf-event-data/image-service-overviews/` from the given AWS account(s)
 ---
 AWSTemplateFormatVersion: '2010-09-09'
 Description: This template creates the AWS infrastructure to publish a public data set on S3. It creates a publicly-accessible S3 bucket for the dataset, enables CloudWatch Metrics for the dataset bucket, and creates a public SQS and Lambda subscribable SNS Topic.
