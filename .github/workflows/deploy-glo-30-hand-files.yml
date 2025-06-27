@@ -23,7 +23,7 @@ jobs:
       #     -e INPUT_BUILD_PDF=false \
       #     ghcr.io/baileyjm02/markdown-to-pdf/markdown-to-pdf:latest
       - name: Create glo-30-hand/readme.html
-        uses: baileyjm02/markdown-to-pdf@v1
+        uses: baileyjm02/markdown-to-pdf@v2
         with:
           input_path: glo-30-hand/readme.md
           output_dir: glo-30-hand/
