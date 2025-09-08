@@ -14,7 +14,7 @@ jobs:
       url:  https://s1-orbits.s3.us-west-2.amazonaws.com/README.html
 
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
 
       # To test, run:
       #     docker run -it --rm -v ${PWD}:/github/workspace \
@@ -23,7 +23,7 @@ jobs:
       #     -e INPUT_BUILD_PDF=false \
       #     ghcr.io/baileyjm02/markdown-to-pdf/markdown-to-pdf:latest
       - name: Create s1-orbits/README.html
-        uses: baileyjm02/markdown-to-pdf@v1
+        uses: baileyjm02/markdown-to-pdf@v2
         with:
           input_path: s1-orbits/README.md
           output_dir: s1-orbits/
@@ -33,7 +33,7 @@ jobs:
         run: |
           sed "165s/\[OPENDATA_BUCKET_NAME\]/s1-orbits/" shared/index.html > s1-orbits/index.html
 
-      - uses: aws-actions/configure-aws-credentials@v4
+      - uses: aws-actions/configure-aws-credentials@v5
         with:
             aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
             aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
