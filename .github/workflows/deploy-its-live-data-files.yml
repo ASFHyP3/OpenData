@@ -14,7 +14,7 @@ jobs:
       url:  https://its-live-data.s3.us-west-2.amazonaws.com/README.html
 
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v6
 
       # To test, run:
       #     docker run -it --rm -v ${PWD}:/github/workspace \
