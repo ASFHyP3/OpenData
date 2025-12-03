@@ -1,0 +1,204 @@
+# customized version of the docs/pds-bucket-cf.yml template for creating the its-live-data bucket.
+# Customization includes a log bucket and a logging configuration and S3 inventory configuration on the dataset bucket.
+---
+AWSTemplateFormatVersion: '2010-09-09'
+Description: This template creates the AWS infrastructure to publish a public data set on S3. It creates a publicly-accessible S3 bucket for the dataset, enables CloudWatch Metrics for the dataset bucket, and creates a public SQS and Lambda subscribable SNS Topic. Additionally, it includes a log bucket, logging configuration, and an inventory configuration.
+
+Parameters:
+  DataSetName:
+    AllowedPattern: '[a-z0-9\.\-]*'
+    ConstraintDescription: may only contain lowercase letters, numbers, and ., or - characters
+    Description: "The name of the dataset's S3 bucket. This will be used to create the dataset S3 bucket."
+    MaxLength: '250'
+    MinLength: '1'
+    Type: String
+
+Resources:
+  SNSTopic:
+    Properties:
+      TopicName: !Join [ "", [ !Join [ "", !Split [ ".", !Ref DataSetName ] ], "-object_created" ] ]
+    Type: AWS::SNS::Topic
+
+  SNSTopicPolicy:
+    Properties:
+      Topics:
+        - !Ref SNSTopic
+      PolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+        - Sid: allowS3BucketToPublish
+          Effect: Allow
+          Action:
+            - sns:Publish
+          Resource: !Ref SNSTopic
+          Principal:
+            Service: s3.amazonaws.com
+          Condition:
+            ArnLike:
+              aws:SourceArn: !Sub arn:aws:s3:::${DataSetName}
+            StringEquals:
+                aws:SourceAccount: !Ref AWS::AccountId
+        - Sid: allowOnlySQSandLambdaSubscription
+          Effect: Allow
+          Action:
+            - sns:Subscribe
+          Resource: !Ref SNSTopic
+          Principal:
+            AWS: "*"
+          Condition:
+            StringEquals:
+              SNS:Protocol:
+                - sqs
+                - lambda
+    Type: AWS::SNS::TopicPolicy
+
+  LogBucket:
+    Type: AWS::S3::Bucket
+    Properties:
+      PublicAccessBlockConfiguration:
+        BlockPublicAcls: True
+        IgnorePublicAcls: True
+        BlockPublicPolicy: True
+        RestrictPublicBuckets: True
+      BucketEncryption:
+        ServerSideEncryptionConfiguration:
+          - ServerSideEncryptionByDefault:
+              SSEAlgorithm: AES256
+            BucketKeyEnabled: true
+      OwnershipControls:
+        Rules:
+          - ObjectOwnership: BucketOwnerEnforced
+      LifecycleConfiguration:
+        Rules:
+        - Id: ExpireAll
+          Status: Enabled
+          ExpirationInDays: 30
+        - Id: ExpireVelocityInventory
+          Prefix: 'inventory/velocity_image_pair/'
+          Status: Enabled
+          ExpirationInDays: 3
+  LogBucketPolicy:
+    Type: AWS::S3::BucketPolicy
+    Properties:
+      Bucket: !Ref LogBucket
+      PolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service:
+                - logging.s3.amazonaws.com
+                - s3.amazonaws.com
+            Action: s3:PutObject
+            Resource: !Sub "${LogBucket.Arn}/*"
+            Condition:
+              ArnLike:
+                "aws:SourceArn": !GetAtt DataSetBucket.Arn
+              StringEquals:
+                "aws:SourceAccount": !Ref AWS::AccountId
+
+  DataSetBucket:
+    DeletionPolicy: Retain
+    UpdateReplacePolicy: Delete
+    DependsOn:
+      - SNSTopicPolicy
+    Properties:
+      BucketName: !Ref DataSetName
+      LoggingConfiguration:
+        DestinationBucketName: !Ref LogBucket
+        TargetObjectKeyFormat:
+          PartitionedPrefix:
+            PartitionDateSource: EventTime
+      MetricsConfigurations:
+        - Id: EntireBucket
+      InventoryConfigurations:
+        - Id: VelocityGranuleInventory
+          Destination:
+            BucketAccountId: !Ref AWS::AccountId
+            BucketArn: !GetAtt LogBucket.Arn
+            Format: Parquet
+            Prefix: inventory/velocity_image_pair
+          Enabled: true
+          Prefix: velocity_image_pair/
+          IncludedObjectVersions: Current
+          OptionalFields:
+            - Size
+            - LastModifiedDate
+            - StorageClass
+            - IntelligentTieringAccessTier
+          ScheduleFrequency: Daily
+        - Id: BucketInventory
+          Destination:
+            BucketAccountId: !Ref AWS::AccountId
+            BucketArn: !GetAtt LogBucket.Arn
+            Format: Parquet
+            Prefix: inventory/all
+          Enabled: true
+          IncludedObjectVersions: Current
+          OptionalFields:
+            - Size
+            - LastModifiedDate
+            - StorageClass
+            - IntelligentTieringAccessTier
+          ScheduleFrequency: Weekly
+      LifecycleConfiguration:
+        Rules:
+        - Id: IntelligentTieringRule
+          Status: Enabled
+          Transitions:
+            - TransitionInDays: '0'
+              StorageClass: INTELLIGENT_TIERING
+        - Id: AbortIncompleteMultipartUploadRule
+          Status: Enabled
+          AbortIncompleteMultipartUpload:
+            DaysAfterInitiation: 7
+      NotificationConfiguration:
+        TopicConfigurations:
+        - Event: "s3:ObjectCreated:*"
+          Topic: !Ref SNSTopic
+      PublicAccessBlockConfiguration:
+          BlockPublicPolicy: false
+          RestrictPublicBuckets: false
+      CorsConfiguration:
+        CorsRules:
+        - AllowedHeaders:
+            - "*"
+          AllowedMethods:
+            - HEAD
+            - GET
+          AllowedOrigins:
+            - "*"
+          ExposedHeaders:
+            - ETag
+            - x-amz-meta-custom-header
+          MaxAge: 3000
+    Type: AWS::S3::Bucket
+
+  DataSetBucketPolicy:
+    Properties:
+      Bucket: !Ref DataSetBucket
+      PolicyDocument:
+        Statement:
+        - Action:
+          - s3:List*
+          - s3:Get*
+          Effect: Allow
+          Principal: "*"
+          Resource:
+          - !Sub arn:aws:s3:::${DataSetBucket}/*
+          - !Sub arn:aws:s3:::${DataSetBucket}
+          Condition:
+              Bool:
+                aws:SecureTransport: true
+    Type: AWS::S3::BucketPolicy
+
+Outputs:
+  DataBucket:
+    Description: "S3 data bucket name"
+    Value: !Sub ${DataSetBucket}
+  LogBucket:
+    Description: "S3 log bucket name"
+    Value: !Sub ${LogBucket}
+  SNSTopic:
+    Description: "SQS and Lambda subscribable SNS Topic"
+    Value: !Ref SNSTopic
