@@ -180,16 +180,28 @@ Resources:
       PolicyDocument:
         Statement:
         - Action:
-          - s3:List*
-          - s3:Get*
+            - s3:List*
+            - s3:Get*
           Effect: Allow
           Principal: "*"
           Resource:
-          - !Sub arn:aws:s3:::${DataSetBucket}/*
-          - !Sub arn:aws:s3:::${DataSetBucket}
+            - !Sub arn:aws:s3:::${DataSetBucket}/*
+            - !Sub arn:aws:s3:::${DataSetBucket}
           Condition:
               Bool:
                 aws:SecureTransport: true
+        # used by Masha (JPL) to generate composites, cogs, etc
+        - Effect: Allow
+          Action:
+            - s3:PutObject
+            - s3:PutObjectTagging
+            - s3:DeleteObject
+            - s3:DeleteObjectTagging
+          Resource:
+            - !Sub arn:aws:s3:::${DataSetBucket}/*
+          Principal:
+            AWS: arn:aws:iam::986442313181:user/srv-its-live
+
     Type: AWS::S3::BucketPolicy
 
 Outputs:
