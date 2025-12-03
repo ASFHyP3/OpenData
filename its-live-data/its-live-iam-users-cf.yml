@@ -17,4 +17,11 @@ Resources:
               - Effect: Allow
                 Action: "s3:*"
                 Resource:
-                 - "arn:aws:s3:::its-live-data/cloud-experiments/*"
+                  - "arn:aws:s3:::its-live-data/cloud-experiments/*"
+              - Effect: Allow
+                Action:
+                  - s3:List*
+                  - s3:Get*
+                Resource:
+                  - "arn:aws:s3:::pds-buckets-its-live-logbucket-70tr3aw5f2op/*"
+                  - "arn:aws:s3:::pds-buckets-its-live-logbucket-70tr3aw5f2op"
