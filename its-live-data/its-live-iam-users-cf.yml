@@ -17,7 +17,7 @@ Resources:
               - Effect: Allow
                 Action: "s3:*"
                 Resource:
-                  - "arn:aws:s3:::its-live-data/cloud-experiments/*"
+                  - "arn:aws:s3:::its-live-data/test-space/*"
               - Effect: Allow
                 Action:
                   - s3:List*
