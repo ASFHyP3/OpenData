@@ -1,4 +1,4 @@
-# aws cloudformation deploy --profile opendata-its-live \                                                                      SIG(126) ↵  15:53:59
+# aws cloudformation deploy --profile opendata-its-live \
 #    --stack-name its-live-iam-users \
 #    --template-file its-live-data/its-live-iam-users-cf.yml \
 #    --capabilities CAPABILITY_NAMED_IAM
