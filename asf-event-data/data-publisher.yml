@@ -10,14 +10,15 @@ Resources:
     Type: AWS::IAM::User
     Properties:
       UserName: data-publisher
+      ManagedPolicyArns:
+        - arn:aws:iam::aws:policy/AmazonS3ReadOnlyAccess
       Policies:
         - PolicyName: data-publisher-policy
           PolicyDocument:
             Version: 2012-10-17
             Statement:
               - Effect: Allow
-                Action: s3:ListBucket
-                Resource: !Sub "arn:aws:s3:::${OpenDataBucketName}"
-              - Effect: Allow
-                Action: s3:PutObject
+                Action:
+                  - s3:PutObject
+                  - s3:PutObjectTagging
                 Resource: !Sub "arn:aws:s3:::${OpenDataBucketName}/*"
