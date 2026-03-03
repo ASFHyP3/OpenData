@@ -33,7 +33,7 @@ jobs:
         run: |
           sed "165s/\[OPENDATA_BUCKET_NAME\]/asf-event-data/" shared/index.html > asf-event-data/index.html
 
-      - uses: aws-actions/configure-aws-credentials@v5
+      - uses: aws-actions/configure-aws-credentials@v6
         with:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
