@@ -201,7 +201,18 @@ Resources:
             - !Sub arn:aws:s3:::${DataSetBucket}/*
           Principal:
             AWS: arn:aws:iam::986442313181:user/srv-its-live
-
+        # used by Masha (JPL) to generate datacubes
+        - Effect: Allow
+          Action:
+            - s3:PutObject
+            - s3:PutObjectTagging
+            - s3:PutObjectRetention
+            - s3:DeleteObject
+            - s3:DeleteObjectTagging
+          Resource:
+            - !Sub arn:aws:s3:::${DataSetBucket}/*
+          Principal:
+            AWS: arn:aws:iam::849259517355:role/its-live-s3-access
     Type: AWS::S3::BucketPolicy
 
 Outputs:
