@@ -1,5 +1,10 @@
-# customized version of the docs/pds-bucket-cf.yml template for creating the its-live-data bucket.
+# Customized version of the docs/pds-bucket-cf.yml template for creating the its-live-data bucket.
 # Customization includes a log bucket and a logging configuration and S3 inventory configuration on the dataset bucket.
+# aws cloudformation deploy --profile opendata-its-live \
+#     --stack-name pds-buckets-its-live \
+#     --template-file its-live-data/bucket-cf.yml \
+#     --capabilities CAPABILITY_NAMED_IAM \
+#     --parameter-overrides DataSetName=its-live-data
 ---
 AWSTemplateFormatVersion: '2010-09-09'
 Description: This template creates the AWS infrastructure to publish a public data set on S3. It creates a publicly-accessible S3 bucket for the dataset, enables CloudWatch Metrics for the dataset bucket, and creates a public SQS and Lambda subscribable SNS Topic. Additionally, it includes a log bucket, logging configuration, and an inventory configuration.
