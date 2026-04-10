@@ -1,4 +1,4 @@
-# aws cloudformation deploy --profile opendata-its-live \                                                                      SIG(126) ↵  15:53:59
+# aws cloudformation deploy --profile opendata-its-live \
 #    --stack-name its-live-iam-users \
 #    --template-file its-live-data/its-live-iam-users-cf.yml \
 #    --capabilities CAPABILITY_NAMED_IAM
@@ -17,4 +17,11 @@ Resources:
               - Effect: Allow
                 Action: "s3:*"
                 Resource:
-                 - "arn:aws:s3:::its-live-data/cloud-experiments/*"
+                  - "arn:aws:s3:::its-live-data/test-space/*"
+              - Effect: Allow
+                Action:
+                  - s3:List*
+                  - s3:Get*
+                Resource:
+                  - "arn:aws:s3:::pds-buckets-its-live-logbucket-70tr3aw5f2op/*"
+                  - "arn:aws:s3:::pds-buckets-its-live-logbucket-70tr3aw5f2op"
