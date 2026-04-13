@@ -23,7 +23,7 @@ jobs:
       #     -e INPUT_BUILD_PDF=false \
       #     ghcr.io/baileyjm02/markdown-to-pdf/markdown-to-pdf:latest
       - name: Create asf-event-data/README.html
-        uses: baileyjm02/markdown-to-pdf@v1
+        uses: baileyjm02/markdown-to-pdf@v2
         with:
           input_path: asf-event-data/README.md
           output_dir: asf-event-data/
