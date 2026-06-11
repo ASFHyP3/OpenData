@@ -25,3 +25,23 @@ Resources:
                 Resource:
                   - "arn:aws:s3:::pds-buckets-its-live-logbucket-70tr3aw5f2op/*"
                   - "arn:aws:s3:::pds-buckets-its-live-logbucket-70tr3aw5f2op"
+  ItsLiveIamUserMliukis:
+    Type: AWS::IAM::User
+    Properties:
+      UserName: mliukis  # Masha Liukis; https://github.com/mliukis
+      Policies:
+        - PolicyName: mliukis-user-policy
+          PolicyDocument:
+            Version: 2012-10-17
+            Statement:
+              - Effect: Allow
+                Action: "s3:*"
+                Resource:
+                  - "arn:aws:s3:::its-live-data/test-space/*"
+              - Effect: Allow
+                Action:
+                  - s3:List*
+                  - s3:Get*
+                Resource:
+                  - "arn:aws:s3:::pds-buckets-its-live-logbucket-70tr3aw5f2op/*"
+                  - "arn:aws:s3:::pds-buckets-its-live-logbucket-70tr3aw5f2op"
