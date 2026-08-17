@@ -45,3 +45,22 @@ Resources:
                 Resource:
                   - "arn:aws:s3:::pds-buckets-its-live-logbucket-70tr3aw5f2op/*"
                   - "arn:aws:s3:::pds-buckets-its-live-logbucket-70tr3aw5f2op"
+  ItsLiveIamUserStacBot:
+    Type: AWS::IAM::User
+    Properties:
+      UserName: stacbot
+      Policies:
+        - PolicyName: stacbot-user-policy
+          PolicyDocument:
+            Version: 2012-10-17
+            Statement:
+              - Effect: Allow
+                Action: "s3:*"
+                Resource:
+                  - "arn:aws:s3:::its-live-data/test-space/stac/*"
+              - Effect: Allow
+                Action:
+                  - s3:List*
+                  - s3:Get*
+                Resource:
+                  - "arn:aws:s3:::pds-buckets-its-live-logbucket-70tr3aw5f2op/inventory/velocity_image_pair/*"
