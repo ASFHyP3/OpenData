@@ -1,0 +1,31 @@
+# aws cloudformation deploy --profile scidev-sandbox \
+#    --stack-name scidev-sandbox-iam-users \
+#    --template-file scidev-sandbox/scidev-sandbox-iam-users-cf.yml \
+#    --capabilities CAPABILITY_NAMED_IAM
+AWSTemplateFormatVersion: 2010-09-09
+
+Resources:
+  ItsLiveIamUsers:
+    Type: AWS::IAM::User
+    Properties:
+      UserName: rtcfetcher
+      Policies:
+        - PolicyName: rtcfetcher-user-policy
+          PolicyDocument:
+            Version: 2012-10-17
+            Statement:
+              - Effect: Allow
+                Action:
+                  - s3:ListBucket
+                Resource:
+                  - "arn:aws:s3:::arcticdems-for-rtc"
+                Condition:
+                  StringLike:
+                    s3:prefix:
+                      - "distribution/*"
+              - Effect: Allow
+                Action:
+                  - s3:List*
+                  - s3:Get*
+                Resource:
+                  - "arn:aws:s3:::arcticdems-for-rtc/distribution/*"
